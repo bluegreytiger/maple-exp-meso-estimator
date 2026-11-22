@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf3ef; --surface:#ffffff; --ink:#10302a; --muted:#5b756e; --line:#cfe0d9;
+  --accent:#1f8a5b; --accent-ink:#ffffff; --warm:#e8590c;
+  --font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0e1a17; --surface:#16261f; --ink:#e4f1ec; --muted:#8fa9a1; --line:#25403a; --accent:#43c28a; --accent-ink:#06150f; --warm:#ff8a4c;}
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font);padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:980px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;font-weight:800;letter-spacing:-.025em;margin:.2em 0 .3em}
+.sub{color:var(--muted);max-width:56ch;margin:0 0 1.5rem}
+.top{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+a.btn,button{font:inherit;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:.55rem .95rem;cursor:pointer;text-decoration:none}
+a.btn.primary,button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+a.btn:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
+.stats{display:flex;gap:2rem;flex-wrap:wrap;margin:0 0 1.75rem}
+.stats div{min-width:7rem}
+.stats b{display:block;font-size:2rem;font-weight:800;line-height:1}
+.stats span{color:var(--muted);font-size:.9rem}
+.filters{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem;display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end;margin-bottom:1.5rem}
+label{display:grid;gap:.3rem;font-size:.9rem;color:var(--muted);font-weight:600}
+input{font:inherit;padding:.55rem .7rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.filters .wide{grid-column:span 2}
+.note{color:var(--muted);font-size:.9rem}
+.list{display:grid;gap:.75rem;margin-top:1rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;padding:1rem 1.1rem;align-items:center}
+summary::-webkit-details-marker{display:none}
+.map{font-weight:700;font-size:1.1rem}
+.region{color:var(--muted);font-size:.9rem}
+.xp{font-size:1.5rem;font-weight:800;text-align:right;color:var(--accent)}
+.xp small{display:block;font-size:.8rem;font-weight:400;color:var(--muted)}
+.chips{grid-column:1/-1;display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.25rem}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.1rem .65rem;font-size:.85rem}
+.detail{padding:0 1.1rem 1rem;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:760px}
+th,td{text-align:left;padding:.4rem .6rem;border-top:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.msg{padding:2rem 0;color:var(--muted)}
+footer{margin-top:2.5rem;color:var(--muted);font-size:.85rem}
+@media(max-width:560px){.filters .wide{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Where should you train?</h1>
+    <p class="sub">Player-submitted rates, party setups, damage ranges and map notes. Filter by level, or add your own report.</p>
+    <div class="top">
+      <a class="btn primary" id="formLink" target="_blank" rel="noopener">Submit a training report</a>
+      <a class="btn" id="sheetLink" target="_blank" rel="noopener">Open source sheet</a>
+    </div>
+  </header>
+
+  <div class="stats" aria-live="polite">
+    <div><b id="sObs">–</b><span>observations</span></div>
+    <div><b id="sMaps">–</b><span>maps</span></div>
+    <div><b id="sLv">–</b><span>level range</span></div>
+  </div>
+
+  <section class="filters" aria-label="Filters">
+    <label>Your level <input id="lvl" type="number" min="1" max="200" inputmode="numeric" placeholder="e.g. 45"></label>
+    <label>Level tolerance (±) <input id="tol" type="number" min="0" max="50" value="5" inputmode="numeric"></label>
+    <label class="wide">Search <input id="q" type="search" placeholder="Map, region, skill or note"></label>
+    <button id="refresh" type="button">Refresh</button>
+  </section>
+
+  <div id="status" class="msg">Loading reports…</div>
+  <div id="list" class="list"></div>
+
+  <footer>Rates are player-submitted estimates, not guaranteed results. Gear, route, party and uptime change the outcome.</footer>
+</div>
+
+<script>
+/* ====== EDIT THESE THREE LINES ====== */
+const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjTg9xcf7wJ4nYy6Rg_OWhpaOu2BfHEPLkcLMi2pBOmH2jQyTiefuiE6hR2K_oCWAK_QjfykU-S1jU/pub?gid=702399574&single=true&output=csv";  // Sheet > File > Share > Publish to web > (responses tab) > CSV. Leave empty to see demo data.
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfNgBMdrfM-7W5Z3FxT0aJmV_ffxNWr3RMmB1Y8XkTJHtmhrg/viewform";
+const SHEET_URL = ""; // optional: the published sheet's regular link
+/* ==================================== */
+
+document.getElementById("formLink").href = FORM_URL;
+const sheetBtn = document.getElementById("sheetLink");
+SHEET_URL ? sheetBtn.href = SHEET_URL : sheetBtn.hidden = true;
+
+const DEMO = `Timestamp,Map,Level,EXP/Hour,Net Meso/Hour,Difficulty to find map,Party Size,Character Stat Attack Range,Main Attacking Skill,Additional Notes,Party Average Level,Time to kill
+1,Henesys Hunting Ground I — Victoria Island,22,"1.2m",80k,1,3,300-650,Power Strike,Easy to find a party,22,4s
+2,Henesys Hunting Ground I — Victoria Island,24,"1,400,000",90k,2,4,320-700,Power Strike,,23,3s
+3,The Burnt Land II — Victoria Island,45,5.5m,210k,3,6,900-1800,Rush + Slash Blast,Bring pots,44,6s
+4,Dangerous Valley — Victoria Island,38,3m,150k,4,2,700-1400,Basic Attack,Needs plat for faster clear,37,8s`;
+
+/* --- helpers --- */
+function parseCSV(text){
+  const rows=[];let row=[],cur="",q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c=='"'){ if(text[i+1]=='"'){cur+='"';i++} else q=false } else cur+=c }
+    else if(c=='"') q=true;
+    else if(c==","){row.push(cur);cur=""}
+    else if(c=="\n"||c=="\r"){ if(c=="\r"&&text[i+1]=="\n")i++; row.push(cur);rows.push(row);row=[];cur="" }
+    else cur+=c;
+  }
+  if(cur||row.length){row.push(cur);rows.push(row)}
+  return rows.filter(r=>r.some(x=>x.trim()));
+}
+function num(s){ // "100k", "1.5m", "100,000" -> number
+  if(s==null) return NaN;
+  const m=String(s).toLowerCase().replace(/[, ]/g,"").match(/^(\d*\.?\d+)([kmb])?/);
+  if(!m) return NaN;
+  return parseFloat(m[1])*({k:1e3,m:1e6,b:1e9}[m[2]]||1);
+}
+function range(s){ const m=String(s||"").replace(/,/g,"").match(/(\d+)\s*[-–to]+\s*(\d+)/); return m?[+m[1],+m[2]]:null }
+function median(a){ a=a.filter(Number.isFinite).sort((x,y)=>x-y); if(!a.length) return NaN; const h=a.length>>1; return a.length%2?a[h]:(a[h-1]+a[h])/2 }
+function fmt(n){ if(!Number.isFinite(n)) return "–"; return n>=1e6?(n/1e6).toFixed(n>=1e7?0:1)+"m":n>=1e3?Math.round(n/1e3)+"k":String(Math.round(n)) }
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* --- load + normalize --- */
+let obs=[];
+const col=(hdr,re)=>hdr.findIndex(h=>re.test(h.toLowerCase()));
+
+function normalize(rows){
+  const h=rows[0];
+  const ix={map:col(h,/^map/),lvl:col(h,/^level/),xp:col(h,/^e?xp/),meso:col(h,/meso/),diff:col(h,/difficulty/),
+            party:col(h,/party size/),partyLvl:col(h,/party average/),dmg:col(h,/damage|attack range/),
+            skill:col(h,/skill/),notes:col(h,/notes/),ttk:col(h,/time to kill/)};
+  return rows.slice(1).map(r=>{
+    const full=(r[ix.map]||"").trim(), cut=full.lastIndexOf(" — ");
+    return {
+      map: cut>0?full.slice(0,cut):full, region: cut>0?full.slice(cut+3):"",
+      level:num(r[ix.lvl]), xp:num(r[ix.xp]), meso:num(r[ix.meso]), diff:num(r[ix.diff]),
+      party:num(r[ix.party]), partyLvl:num(r[ix.partyLvl]), ttk:(r[ix.ttk]||"").trim(), dmg:range(r[ix.dmg]), dmgRaw:(r[ix.dmg]||"").trim(),
+      skill:(r[ix.skill]||"").trim(), notes:(r[ix.notes]||"").trim()
+    };
+  }).filter(o=>o.map && Number.isFinite(o.xp));
+}
+
+async function load(){
+  const st=document.getElementById("status"); st.hidden=false; st.textContent="Loading reports…";
+  try{
+    let text=DEMO;
+    if(CSV_URL){ const res=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"_="+Date.now()); if(!res.ok) throw new Error("HTTP "+res.status); text=await res.text(); }
+    obs=normalize(parseCSV(text));
+    if(!CSV_URL) st.textContent="Showing demo data. Set CSV_URL in index.html to use your sheet.";
+    else st.hidden=true;
+    render();
+  }catch(e){ st.textContent="Couldn't load reports ("+e.message+"). Check that the sheet is published to the web as CSV."; }
+}
+
+/* --- render --- */
+function render(){
+  const lv=parseFloat(lvl.value), tol=parseFloat(tol_.value)||0, q=qEl.value.trim().toLowerCase();
+  let rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol) &&
+    (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes).toLowerCase().includes(q)));
+
+  const levels=obs.map(o=>o.level).filter(Number.isFinite);
+  sObs.textContent=obs.length; sMaps.textContent=new Set(obs.map(o=>o.map+o.region)).size;
+  sLv.textContent=levels.length?Math.min(...levels)+"–"+Math.max(...levels):"–";
+
+  const groups=new Map();
+  rows.forEach(o=>{const k=o.map+"|"+o.region; (groups.get(k)||groups.set(k,[]).get(k)).push(o)});
+  const out=[...groups.values()].map(g=>({
+    g, map:g[0].map, region:g[0].region, n:g.length,
+    xp:median(g.map(o=>o.xp)), meso:median(g.map(o=>o.meso)), diff:median(g.map(o=>o.diff)),
+    lo:Math.min(...g.map(o=>o.level)), hi:Math.max(...g.map(o=>o.level)),
+    party:median(g.map(o=>o.party)), partyLvl:median(g.map(o=>o.partyLvl)),
+    dmg:g.some(o=>o.dmg)?fmt(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"–"+fmt(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
+    skill:Object.entries(g.reduce((m,o)=>(o.skill&&(m[o.skill]=(m[o.skill]||0)+1),m),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||""
+  })).sort((a,b)=>b.xp-a.xp);
+
+  list.innerHTML=out.map(m=>`
+    <details>
+      <summary>
+        <div><div class="map">${esc(m.map)}</div><div class="region">${esc(m.region)}</div></div>
+        <div class="xp">${fmt(m.xp)}<small>median XP/hr</small></div>
+        <div class="chips">
+          <span class="chip">Lv ${m.lo===m.hi?m.lo:m.lo+"–"+m.hi}</span>
+          ${Number.isFinite(m.meso)?`<span class="chip">${fmt(m.meso)} meso/hr</span>`:""}
+          ${Number.isFinite(m.diff)?`<span class="chip">Party search ${m.diff.toFixed(1)}/5</span>`:""}
+          ${Number.isFinite(m.party)?`<span class="chip">Party of ${Math.round(m.party)}</span>`:""}
+          ${Number.isFinite(m.partyLvl)?`<span class="chip">Avg party Lv ${Math.round(m.partyLvl)}</span>`:""}
+          ${m.dmg?`<span class="chip">Damage ${m.dmg}</span>`:""}
+          ${m.skill?`<span class="chip">${esc(m.skill)}</span>`:""}
+          <span class="chip">${m.n} report${m.n>1?"s":""}</span>
+        </div>
+      </summary>
+      <div class="detail"><table>
+        <tr><th>Level</th><th>XP/hr</th><th>Meso/hr</th><th>Party</th><th>Avg Lv</th><th>Damage</th><th>Time to kill</th><th>Skill</th><th>Notes</th></tr>
+        ${m.g.map(o=>`<tr><td>${o.level}</td><td>${fmt(o.xp)}</td><td>${fmt(o.meso)}</td><td>${Number.isFinite(o.party)?o.party:"–"}</td><td>${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td>${esc(o.dmgRaw)||"–"}</td><td>${esc(o.ttk)||"–"}</td><td>${esc(o.skill)||"–"}</td><td>${esc(o.notes)}</td></tr>`).join("")}
+      </table></div>
+    </details>`).join("");
+
+  if(!out.length && obs.length){ status_.hidden=false; status_.textContent="No reports match. Widen the level tolerance or clear the search."; }
+  else if(CSV_URL) status_.hidden=true;
+}
+
+const lvl=document.getElementById("lvl"), tol_=document.getElementById("tol"), qEl=document.getElementById("q"),
+      list=document.getElementById("list"), status_=document.getElementById("status"),
+      sObs=document.getElementById("sObs"), sMaps=document.getElementById("sMaps"), sLv=document.getElementById("sLv");
+[lvl,tol_,qEl].forEach(el=>el.addEventListener("input",render));
+document.getElementById("refresh").addEventListener("click",load);
+load();
+</script>
+</body>
+</html>
