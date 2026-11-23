@@ -44,7 +44,7 @@ input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{o
 .meta{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding:1.1rem 1.5rem .8rem;font:700 .9rem var(--sans);color:var(--muted)}
 .meta .live{color:var(--green)}
 .scroll{overflow-x:auto;padding:0 1.5rem 1rem}
-.cols{display:grid;grid-template-columns:minmax(220px,3fr) .8fr 1.5fr 1.5fr .6fr .7fr .7fr;gap:1rem;align-items:start;min-width:860px}
+.cols{display:grid;grid-template-columns:minmax(220px,3fr) .8fr 1.5fr 1.5fr .6fr .9fr .7fr;gap:1rem;align-items:start;min-width:860px}
 .head{padding:.8rem 1rem;border-bottom:2px solid var(--line);font:800 .85rem var(--sans);color:var(--muted)}
 details{border-bottom:1px solid var(--line)}
 details:last-child{border-bottom:0}
@@ -84,6 +84,12 @@ details.stale summary{opacity:.6}
   summary.cols>div[data-label]::before{content:attr(data-label);display:block;font:800 .75rem var(--sans);color:var(--muted)}
   .detail{padding-left:1rem}
 }
+.tip{margin-left:.4rem;width:1.25rem;height:1.25rem;padding:0;border-radius:50%;border:1.5px solid var(--muted);background:transparent;color:var(--muted);font:800 .72rem/1 var(--sans);cursor:help;vertical-align:middle}
+.tip:hover,.tip:focus-visible{background:var(--blue);border-color:var(--blue);color:#fff}
+#tipbox{position:fixed;z-index:30;display:none;max-width:270px;background:var(--ink);color:#fff;padding:.7rem .9rem;border-radius:12px;font:600 .85rem/1.45 var(--sans);text-transform:none;letter-spacing:0;box-shadow:0 8px 24px rgba(20,38,74,.25)}
+.maplink{color:inherit;text-decoration:none}
+.maplink:hover{color:var(--blue);text-decoration:underline}
+.maplink span{color:var(--muted);font-size:.8em}
 </style>
 </head>
 <body>
@@ -108,24 +114,24 @@ details.stale summary{opacity:.6}
 
   <section class="panel">
     <div class="bar">
-      <input id="q" type="search" placeholder="Search maps, notes, or damage…" aria-label="Search">
+      <input id="q" type="search" placeholder="Search maps, notes, or attack range…" aria-label="Search">
       <button id="refresh" type="button">Refresh</button>
     </div>
     <div class="filters">
-      <select id="sort" aria-label="Sort by"><option value="xp">Sort: best XP</option><option value="meso">Sort: best meso</option><option value="easy">Sort: easiest to find</option><option value="reports">Sort: most reports</option></select>
+      <select id="sort" aria-label="Sort by"><option value="xp">Sort: best EXP</option><option value="meso">Sort: best meso</option><option value="easy">Sort: easiest to find</option><option value="reports">Sort: most reports</option></select>
       <select id="skill" aria-label="Skill"><option value="">Any skill</option></select>
       <select id="party" aria-label="Party size"><option value="">Any party size</option><option value="1">Solo</option><option value="2-3">2–3</option><option value="4-6">4–6</option></select>
       <select id="age" aria-label="Report age"><option value="">Any time</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select>
     </div>
     <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
     <div class="scroll">
-      <div class="cols head"><span>Map</span><span>Levels</span><span>Best XP / hour</span><span>Best meso / hour</span><span>Spot</span><span>Party</span><span>Reports</span></div>
+      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span>Best EXP / hour<button class="tip" type="button" data-tip="The highest EXP per hour reported. The line under it shows the range of all reports, plus the median when there are 3 or more. A ⚠ means the best is far above the rest." aria-label="What does Best EXP / hour mean?">?</button></span><span>Best meso / hour<button class="tip" type="button" data-tip="The highest net meso per hour reported (meso plus drops, minus potion cost). The line under it shows the range of all reports." aria-label="What does Best meso / hour mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard the map is to find, from 1 (every channel is empty) to 5 (over 30 minutes to find a party). Shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
       <div id="list"></div>
       <div id="status" class="msg" hidden></div>
     </div>
   </section>
 
-  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi.</footer>
+  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links open <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.</footer>
 </div>
 
 <script>
@@ -206,13 +212,13 @@ function render(){
     return{hi,flag:a.length>=3&&md>0&&hi>2*md,sub:a.length<2||lo===hi?"best":(a.length>=3?"median "+full(md)+" · ":"")+full(lo)+"-"+full(hi)}};
   const cell=(b,c)=>b?`<div class="val ${c}">${full(b.hi)}${b.flag?'<span class="flag" title="Well above the other reports">⚠</span>':""}</div><div class="sm" style="grid-column:auto">${b.sub}</div>`:`<div class="val">–</div>`;
   $("list").innerHTML=out.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}"><summary class="cols">
-      <div class="name"><i>›</i><b>${esc(m.map)}</b><small>${esc(m.region)}</small><small>${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}</small></div>
+      <div class="name"><i>›</i><b>${mapLink(m)}</b><small>${esc(m.region)}</small><small>${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}</small></div>
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
-      <div data-label="Best XP / hour">${cell(best(m.xs),"xp")}</div><div data-label="Best meso / hour">${cell(best(m.ms),"meso")}</div>
+      <div data-label="Best EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="Best meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
-      <div class="val plain" data-label="Party">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
-      <div class="detail"><p class="facts">${[m.dmg&&"Damage "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
-      <table><tr><th>Level</th><th>XP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party</th><th>Avg Lv</th><th>Damage</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
+      <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
+      <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
+      <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lv</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
       ${m.g.map(o=>`<tr><td>${full(o.level)}</td><td>${full(o.xp)}</td><td>${full(o.meso)}</td><td>${Number.isFinite(o.diff)?o.diff:"–"}</td><td>${Number.isFinite(o.party)?o.party:"–"}</td><td>${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td>${esc(o.dmgRaw)||"–"}</td><td>${esc(o.skill)||"–"}</td><td>${esc(o.ttk)||"–"}</td><td>${esc(o.notes)}</td></tr>`).join("")}
       </table></div></details>`).join("");
   $("count").textContent=rows.length+" observations · "+out.length+" maps";
@@ -228,7 +234,33 @@ function writeHash(){const p=new URLSearchParams();
   history.replaceState(null,"",p.toString()?"#"+p:location.pathname+location.search)}
 Object.values(F).forEach(id=>$(id).addEventListener("input",()=>{render();writeHash()}));
 $("refresh").addEventListener("click",load);
+const tipBox=document.createElement("div");tipBox.id="tipbox";tipBox.setAttribute("role","tooltip");document.body.appendChild(tipBox);
+let tipFor=null;
+function showTip(b){tipFor=b;tipBox.textContent=b.dataset.tip;tipBox.style.display="block";
+  const r=b.getBoundingClientRect(),w=tipBox.offsetWidth;
+  tipBox.style.left=Math.max(8,Math.min(r.left+r.width/2-w/2,innerWidth-w-8))+"px";
+  tipBox.style.top=(r.bottom+8)+"px";b.setAttribute("aria-describedby","tipbox")}
+function hideTip(){tipBox.style.display="none";if(tipFor)tipFor.removeAttribute("aria-describedby");tipFor=null}
+document.querySelectorAll(".tip").forEach(b=>{
+  b.addEventListener("mouseenter",()=>showTip(b));b.addEventListener("mouseleave",hideTip);
+  b.addEventListener("focus",()=>showTip(b));b.addEventListener("blur",hideTip);
+  b.addEventListener("click",e=>{e.stopPropagation();showTip(b)})});
+document.addEventListener("click",hideTip);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideTip()});
+addEventListener("scroll",hideTip,true);
+const IDS={full:new Map(),name:new Map()};
+async function loadMapIds(){try{
+  const r=await fetch("https://osmsdataexplorer.com/data/current/maps.json");if(!r.ok)return;
+  const d=await r.json(),seen=new Map();
+  (d.regions||[]).forEach(g=>(g.maps||[]).forEach(m=>{
+    IDS.full.set(m.name+"|"+(m.region||g.region||""),m.id);
+    (seen.get(m.name)||seen.set(m.name,new Set()).get(m.name)).add(m.id)}));
+  seen.forEach((ids,n)=>{if(ids.size===1)IDS.name.set(n,[...ids][0])});
+  if(obs.length)render()}catch(e){}}
+function mapLink(m){const id=IDS.full.get(m.map+"|"+m.region)??IDS.name.get(m.map);
+  return id==null?esc(m.map):`<a class="maplink" href="https://meowdb.com/msclassic/maps/${String(id).padStart(9,"0")}" target="_blank" rel="noopener" title="Open this map on NiaMeowDB">${esc(m.map)}<span aria-hidden="true"> ↗</span></a>`}
 load();
+loadMapIds();
 </script>
 </body>
 </html>
