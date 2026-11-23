@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v6 -->
+<!-- build: layout-v9 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#cde8ff">
@@ -195,8 +195,8 @@ details.bestrow{background:#f4fbf5;box-shadow:inset 4px 0 0 var(--green)}
   </div>
 
   <details class="howto"><summary>How to read this</summary><ul>
-    <li><b>Best</b> is the highest number anyone reported. <b>Typical</b> is the middle value, which is usually more realistic. Switch with the “Show” menu.</li>
-    <li><b>Spot</b> is how hard the map is to find, from 1 (empty channels) to 5 (over 30 minutes to find a party).</li>
+    <li><b>Median</b> is the middle value across reports, which is usually more realistic. <b>Best</b> is the highest number anyone reported. Switch with the “Show” menu.</li>
+    <li><b>Spot</b> is how hard it is to find a party on the map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party).</li>
     <li>A <b>⚠</b> means the best report is far above the others, so treat it with caution.</li>
     <li><b>Limited data</b> means fewer than 3 reports.</li>
     <li>Everything is a player estimate. Gear, route, party and uptime change the result.</li></ul></details>
@@ -206,8 +206,8 @@ details.bestrow{background:#f4fbf5;box-shadow:inset 4px 0 0 var(--green)}
       <button id="refresh" type="button">Refresh</button>
     </div>
     <div class="filters">
-      <select id="stat" aria-label="Show best or typical values"><option value="best">Show: best</option><option value="typ">Show: typical</option></select>
-      <select id="sort" aria-label="Sort by"><option value="xp">Sort: best EXP</option><option value="meso">Sort: best meso</option><option value="easy">Sort: easiest to find</option><option value="reports">Sort: most reports</option></select>
+      <select id="stat" aria-label="Show median or best values"><option value="med">Show: median</option><option value="best">Show: best</option></select>
+      <select id="sort" aria-label="Sort by"><option value="xp">Sort: EXP</option><option value="meso">Sort: meso</option><option value="easy">Sort: easiest party</option><option value="reports">Sort: most reports</option></select>
       <select id="skill" aria-label="Skill"><option value="">Any skill</option></select>
       <select id="party" aria-label="Party size"><option value="">Any party size</option><option value="1">Solo</option><option value="2-3">2–3</option><option value="4-6">4–6</option></select>
       <select id="age" aria-label="Report age"><option value="">Any time</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select>
@@ -215,7 +215,7 @@ details.bestrow{background:#f4fbf5;box-shadow:inset 4px 0 0 var(--green)}
     <div id="picks"></div>
     <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
     <div class="scroll">
-      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><span id="hXp">Best EXP / hour</span><button class="tip" type="button" data-tip="The highest EXP per hour reported (or the middle value if you pick Typical). The line under it shows the range of all reports, plus the median when there are 3 or more. A ⚠ means the best is far above the rest." aria-label="What does Best EXP / hour mean?">?</button></span><span><span id="hMeso">Best meso / hour</span><button class="tip" type="button" data-tip="The highest net meso per hour reported (meso plus drops, minus potion cost). The line under it shows the range of all reports." aria-label="What does Best meso / hour mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard the map is to find, from 1 (every channel is empty) to 5 (over 30 minutes to find a party). Shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
+      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><span id="hXp">Median EXP / hour</span><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><span id="hMeso">Median meso / hour</span><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). Shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest. The line under it shows the average level of the party members." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
       <div id="list"></div>
       <div id="status" class="msg" hidden></div>
     </div>
@@ -294,7 +294,7 @@ function setupSkills(){const cur=$("skill").value||HASH.k||"";
   $("skill").value=cur}
 function render(){
   const lv=parseFloat($("lvl").value),tol=parseFloat($("tol").value)||0,q=$("q").value.trim().toLowerCase(),
-    sk=$("skill").value,pt=$("party").value,ag=parseFloat($("age").value),sort=$("sort").value,typ=$("stat").value==="typ",
+    sk=$("skill").value,pt=$("party").value,ag=parseFloat($("age").value),sort=$("sort").value,typ=$("stat").value==="med",
     pr=pt?pt.split("-").map(Number):null,plo=pr?pr[0]:0,phi=pr?(pr[1]??pr[0]):99;
   const rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol)&&
     (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes+" "+o.dmgRaw).toLowerCase().includes(q))&&
@@ -304,13 +304,13 @@ function render(){
   $("sLv").textContent=lvls.length?Math.min(...lvls)+"-"+Math.max(...lvls):"–";
   const groups=new Map();rows.forEach(o=>{const k=o.map+"|"+o.region;(groups.get(k)||groups.set(k,[]).get(k)).push(o)});
   const out=[...groups.values()].map(g=>{const ts=fin(g.map(o=>o.ts)),tk=fin(g.map(o=>parseFloat(o.ttk)));
-    return{g,map:g[0].map,region:g[0].region,n:g.length,xs:fin(g.map(o=>o.xp)),ms:fin(g.map(o=>o.meso)),diff:median(g.map(o=>o.diff)),
+    return{g,map:g[0].map,region:g[0].region,n:g.length,partyLvl:median(g.map(o=>o.partyLvl)),xs:fin(g.map(o=>o.xp)),ms:fin(g.map(o=>o.meso)),diff:median(g.map(o=>o.diff)),
       latest:ts.length?Math.max(...ts):NaN,ttk:tk.length?median(tk)+(g.map(o=>o.ttk).find(Boolean)||"").replace(/[\d.\s]/g,""):"",
       dmg:g.some(o=>o.dmg)?full(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"-"+full(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
       skill:Object.entries(g.reduce((m,o)=>(o.skill&&(m[o.skill]=(m[o.skill]||0)+1),m),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||""}});
   const key={xp:m=>typ?median(m.xs):Math.max(...m.xs),meso:m=>m.ms.length?(typ?median(m.ms):Math.max(...m.ms)):-1e12,easy:m=>Number.isFinite(m.diff)?-m.diff:-99,reports:m=>m.n}[sort];
   out.sort((a,b)=>key(b)-key(a));
-  const lab=typ?"Typical":"Best";$("hXp").textContent=lab+" EXP / hour";$("hMeso").textContent=lab+" meso / hour";
+  const lab=typ?"Median":"Best";$("hXp").textContent=lab+" EXP / hour";$("hMeso").textContent=lab+" meso / hour";
   const best=a=>{if(!a.length)return null;const hi=Math.max(...a),lo=Math.min(...a),md=median(a);
     if(typ)return{v:md,flag:false,sub:a.length<2?"only report":full(lo)+"-"+full(hi)};
     return{v:hi,flag:a.length>=3&&md>0&&hi>2*md,sub:a.length<2||lo===hi?"best":(a.length>=3?"median "+full(md)+" · ":"")+full(lo)+"-"+full(hi)}};
@@ -324,13 +324,13 @@ function render(){
     picks={e:[...pool].sort((a,b)=>val(b.xs)-val(a.xs))[0],me,ez,thin:!big.length};
   }
   const card=(t,m,v)=>m?`<button type="button" class="pick" data-k="${esc(m.map+"|"+m.region)}"><span class="pl">${t}</span><b>${esc(m.map)}</b><span class="pv">${v}</span></button>`:"";
-  $("picks").innerHTML=picks?`<div class="picks"><p class="note">Top picks for level ${lv} (±${tol})${picks.thin?" · few reports so far, so take these lightly":""}</p><div class="pgrid">${card(lab+" EXP",picks.e,full(val(picks.e.xs))+" EXP/hr")}${card(lab+" meso",picks.me,picks.me?full(val(picks.me.ms))+" meso/hr":"")}${card("Easiest to find",picks.ez,picks.ez?"Spot "+Math.round(picks.ez.diff):"")}</div></div>`:"";
+  $("picks").innerHTML=picks?`<div class="picks"><p class="note">Top picks for level ${lv} (±${tol})${picks.thin?" · few reports so far, so take these lightly":""}</p><div class="pgrid">${card(lab+" EXP",picks.e,full(val(picks.e.xs))+" EXP/hr")}${card(lab+" meso",picks.me,picks.me?full(val(picks.me.ms))+" meso/hr":"")}${card("Easiest party",picks.ez,picks.ez?"Spot "+Math.round(picks.ez.diff):"")}</div></div>`:"";
   $("list").innerHTML=out.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}${picks&&m===picks.e?" bestrow":""}" data-k="${esc(m.map+"|"+m.region)}"><summary class="cols">
       <div class="name"><i></i><b>${mapLink(m)}</b><small>${esc(m.region)}</small><small>${picks&&m===picks.e?'<span class="star">★ Best match</span> · ':""}${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}${m.n<3?' · <span class="thin">limited data</span>':""}</small></div>
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
       <div data-label="${lab} EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="${lab} meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
-      <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
+      <div data-label="Party size"><div class="val plain">${span(m.g.map(o=>o.party))}</div>${Number.isFinite(m.partyLvl)?`<div class="sm" style="grid-column:auto">avg Lvl ${Math.round(m.partyLvl)}</div>`:""}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
       <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
       <a class="addbtn" href="${reportUrl(m)}" target="_blank" rel="noopener">Add a report for this map ↗</a>
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lvl</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
@@ -343,9 +343,10 @@ function render(){
   else st.hidden=true}
 const F={l:"lvl",t:"tol",q:"q",s:"sort",v:"stat",k:"skill",p:"party",a:"age"};
 const HASH=Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+if(HASH.v==="typ")HASH.v="med";
 for(const[k,id]of Object.entries(F))if(HASH[k]&&k!=="k")$(id).value=HASH[k];
 function writeHash(){const p=new URLSearchParams();
-  for(const[k,id]of Object.entries(F)){const v=$(id).value;if(v&&!(id==="tol"&&v==="3")&&!(id==="sort"&&v==="xp")&&!(id==="stat"&&v==="best"))p.set(k,v)}
+  for(const[k,id]of Object.entries(F)){const v=$(id).value;if(v&&!(id==="tol"&&v==="3")&&!(id==="sort"&&v==="xp")&&!(id==="stat"&&v==="med"))p.set(k,v)}
   history.replaceState(null,"",p.toString()?"#"+p:location.pathname+location.search)}
 Object.values(F).forEach(id=>$(id).addEventListener("input",()=>{render();writeHash()}));
 $("refresh").addEventListener("click",load);
