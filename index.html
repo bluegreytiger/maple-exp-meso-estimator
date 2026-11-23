@@ -2,214 +2,232 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
 <title>Training Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#eaf3ef; --surface:#ffffff; --ink:#10302a; --muted:#5b756e; --line:#cfe0d9;
-  --accent:#1f8a5b; --accent-ink:#ffffff; --warm:#e8590c;
-  --font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-@media (prefers-color-scheme:dark){
-  :root{--bg:#0e1a17; --surface:#16261f; --ink:#e4f1ec; --muted:#8fa9a1; --line:#25403a; --accent:#43c28a; --accent-ink:#06150f; --warm:#ff8a4c;}
+  --bg:#f4faff; --panel:#ffffff; --field:#f1f7fd; --line:#cbddf0; --ink:#14264a; --muted:#566b8f;
+  --green:#1b8a36; --orange:#c96a0a; --blue:#1d4ed8; --blue-dark:#173fb0;
+  --sans:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Fredoka","Nunito",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-padding-top:1rem}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font);padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-.wrap{max-width:980px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
-h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;font-weight:800;letter-spacing:-.025em;margin:.2em 0 .3em}
-.sub{color:var(--muted);max-width:56ch;margin:0 0 1.5rem}
-.top{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
-a.btn,button{font:inherit;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:.55rem .95rem;cursor:pointer;text-decoration:none}
-a.btn.primary,button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-a.btn:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
-.stats{display:flex;gap:2rem;flex-wrap:wrap;margin:0 0 1.75rem}
-.stats div{min-width:7rem}
-.stats b{display:block;font-size:2rem;font-weight:800;line-height:1}
-.stats span{color:var(--muted);font-size:.9rem}
-.filters{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1rem;display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end;margin-bottom:1.5rem}
-label{display:grid;gap:.3rem;font-size:.9rem;color:var(--muted);font-weight:600}
-input{font:inherit;padding:.55rem .7rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
-.filters .wide{grid-column:span 2}
-.note{color:var(--muted);font-size:.9rem}
-.list{display:grid;gap:.75rem;margin-top:1rem}
-details{background:var(--surface);border:1px solid var(--line);border-radius:14px}
-summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;padding:1rem 1.1rem;align-items:center}
+body{margin:0;color:var(--ink);font:16px/1.55 var(--sans);min-height:100vh;
+  background:linear-gradient(180deg,#cde8ff 0,#e8f4ff 380px,var(--bg) 760px) no-repeat,var(--bg);
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:1180px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.hero{display:grid;grid-template-columns:1fr auto;gap:2rem 3rem;align-items:start}
+h1{font:600 clamp(2.5rem,6.2vw,4.6rem)/1.05 var(--display);letter-spacing:-.015em;margin:0 0 1rem;max-width:12em}
+.sub{color:var(--muted);font-size:1.15rem;max-width:34em;margin:0 0 1.4rem}
+.stats{font:700 .95rem var(--sans);color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap}
+.stats b{color:var(--blue);font-weight:800;font-size:1.1rem}
+.side{display:grid;gap:1rem;justify-items:end;min-width:340px}
+.finder{display:flex;align-items:center;gap:.8rem;width:100%;padding:1.2rem 1.4rem;border:2px solid var(--line);border-radius:20px;background:var(--panel)}
+.finder strong{font-weight:800;flex:1;font-size:1.05rem}
+.finder span{font:700 .9rem var(--sans);color:var(--muted)}
+.finder input{width:5rem;padding:.7rem .5rem;text-align:center}
+input{font:700 1rem var(--sans);color:var(--ink);background:var(--field);border:2px solid var(--line);border-radius:12px}
+input::placeholder{color:#8ea0bd;font-weight:600}
+input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #f59f00;outline-offset:2px}
+.cta{display:inline-flex;align-items:center;gap:.5rem;background:var(--blue);color:#fff;font:600 1.05rem var(--display);padding:.95rem 1.7rem;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 var(--blue-dark)}
+.cta:hover{background:#2a5bea}
+.cta:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blue-dark)}
+.panel{margin-top:2.5rem;border:2px solid var(--line);border-radius:24px;background:var(--panel);overflow:hidden;box-shadow:0 10px 30px rgba(20,38,74,.08)}
+.bar{display:flex;gap:1rem;padding:1.4rem 1.5rem 1.3rem}
+.bar input{flex:1;padding:1rem 1.2rem;font-size:.98rem}
+.bar button{font:700 1rem var(--sans);color:var(--ink);background:#e4effb;border:2px solid var(--line);border-radius:12px;padding:0 1.5rem;cursor:pointer}
+.bar button:hover{background:#d6e6f8}
+.meta{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding:1.1rem 1.5rem .8rem;font:700 .9rem var(--sans);color:var(--muted)}
+.meta .live{color:var(--green)}
+.scroll{overflow-x:auto;padding:0 1.5rem 1rem}
+.cols{display:grid;grid-template-columns:minmax(220px,3fr) .8fr 1.5fr 1.5fr .6fr .7fr .7fr;gap:1rem;align-items:start;min-width:860px}
+.head{padding:.8rem 1rem;border-bottom:2px solid var(--line);font:800 .85rem var(--sans);color:var(--muted)}
+details{border-bottom:1px solid var(--line)}
+details:last-child{border-bottom:0}
+summary{list-style:none;cursor:pointer;padding:1.2rem 1rem;border-radius:12px}
+summary:hover{background:#f3f9ff}
 summary::-webkit-details-marker{display:none}
-.map{font-weight:700;font-size:1.1rem}
-.region{color:var(--muted);font-size:.9rem}
-.xp{font-size:1.5rem;font-weight:800;text-align:right;color:var(--accent)}
-.xp small{display:block;font-size:.8rem;font-weight:400;color:var(--muted)}
-.chips{grid-column:1/-1;display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.25rem}
-.chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.1rem .65rem;font-size:.85rem}
-.detail{padding:0 1.1rem 1rem;overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:760px}
-th,td{text-align:left;padding:.4rem .6rem;border-top:1px solid var(--line);vertical-align:top}
-th{color:var(--muted);font-weight:600}
-.msg{padding:2rem 0;color:var(--muted)}
-footer{margin-top:2.5rem;color:var(--muted);font-size:.85rem}
-@media(max-width:560px){.filters .wide{grid-column:auto}}
+.name{display:grid;grid-template-columns:1.3rem 1fr;gap:.1rem .5rem}
+.name i{color:var(--blue);font:800 1.3rem/1.2 var(--sans);font-style:normal;transition:transform .15s}
+details[open] .name i{transform:rotate(90deg)}
+.name b{font:600 1.2rem var(--display);letter-spacing:-.005em}
+.name small,.sm{grid-column:2;font:600 .88rem var(--sans);color:var(--muted)}
+.val{font:800 1.12rem var(--sans);font-variant-numeric:tabular-nums}
+.val.xp{color:var(--green)} .val.meso{color:var(--orange)}
+.val.plain{font-weight:700;font-size:1.05rem}
+.badge{display:inline-grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:12px;background:#d9f4e0;color:var(--green);font:800 1.1rem var(--sans)}
+.badge.none{background:#e6edf6;color:var(--muted)}
+.detail{padding:0 1rem 1.4rem 2.8rem;overflow-x:auto}
+.facts{font:700 .9rem var(--sans);color:var(--muted);margin:0 0 .8rem}
+table{border-collapse:collapse;width:100%;min-width:780px;font-size:.93rem}
+th,td{text-align:left;padding:.5rem .6rem;border-top:1px solid var(--line);vertical-align:top}
+th{font:800 .8rem var(--sans);color:var(--muted)}
+td:nth-child(2){color:var(--green);font-weight:800} td:nth-child(3){color:var(--orange);font-weight:800}
+.msg{padding:2.5rem 1rem;color:var(--muted);font-weight:700}
+footer{margin-top:2rem;color:var(--muted);font-size:.92rem;max-width:44em}
+footer a{color:inherit}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.side{justify-items:start;min-width:0}.bar{flex-wrap:wrap}.bar button{padding:.9rem 1.5rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+select{font:700 .95rem var(--sans);color:var(--ink);background:var(--field);border:2px solid var(--line);border-radius:12px;padding:.65rem .9rem}
+.filters{display:flex;gap:.75rem;flex-wrap:wrap;padding:0 1.5rem 1.3rem}
+.flag{color:var(--orange);font-size:.8em;margin-left:.3rem;cursor:help}
+details.stale summary{opacity:.6}
+@media(max-width:720px){
+  .scroll{padding:0 .75rem 1rem}
+  .cols{min-width:0;grid-template-columns:1fr 1fr;gap:.7rem 1rem}
+  .head{display:none}
+  .cols .name{grid-column:1/-1}
+  summary.cols>div[data-label]::before{content:attr(data-label);display:block;font:800 .75rem var(--sans);color:var(--muted)}
+  .detail{padding-left:1rem}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Where should you train?</h1>
-    <p class="sub">Player-submitted rates, party setups, damage ranges and map notes. Filter by level, or add your own report.</p>
-    <div class="top">
-      <a class="btn primary" id="formLink" target="_blank" rel="noopener">Submit a training report</a>
-      <a class="btn" id="sheetLink" target="_blank" rel="noopener">Open source sheet</a>
+  <div class="hero">
+    <div>
+      <h1>Find your next training spot</h1>
+      <p class="sub">See what other players earn per hour and how they set up. Enter your level to narrow it down, or share your own numbers.</p>
+      <div class="stats" aria-live="polite">
+        <span><b id="sObs">–</b> observations</span><span><b id="sMaps">–</b> maps</span><span>levels <b id="sLv">–</b></span>
+      </div>
     </div>
-  </header>
-
-  <div class="stats" aria-live="polite">
-    <div><b id="sObs">–</b><span>observations</span></div>
-    <div><b id="sMaps">–</b><span>maps</span></div>
-    <div><b id="sLv">–</b><span>level range</span></div>
+    <div class="side">
+      <div class="finder">
+        <strong>Find spots near your level</strong>
+        <span>Level</span><input id="lvl" type="number" min="1" max="200" inputmode="numeric" placeholder="–" aria-label="Your level">
+        <span>±</span><input id="tol" type="number" min="0" max="50" value="3" inputmode="numeric" aria-label="Level tolerance">
+      </div>
+      <a class="cta" id="formLink" target="_blank" rel="noopener">Submit a training report ↗</a>
+    </div>
   </div>
 
-  <section class="filters" aria-label="Filters">
-    <label>Your level <input id="lvl" type="number" min="1" max="200" inputmode="numeric" placeholder="e.g. 45"></label>
-    <label>Level tolerance (±) <input id="tol" type="number" min="0" max="50" value="5" inputmode="numeric"></label>
-    <label class="wide">Search <input id="q" type="search" placeholder="Map, region, skill or note"></label>
-    <button id="refresh" type="button">Refresh</button>
+  <section class="panel">
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search maps, notes, or damage…" aria-label="Search">
+      <button id="refresh" type="button">Refresh</button>
+    </div>
+    <div class="filters">
+      <select id="sort" aria-label="Sort by"><option value="xp">Sort: best XP</option><option value="meso">Sort: best meso</option><option value="easy">Sort: easiest to find</option><option value="reports">Sort: most reports</option></select>
+      <select id="skill" aria-label="Skill"><option value="">Any skill</option></select>
+      <select id="party" aria-label="Party size"><option value="">Any party size</option><option value="1">Solo</option><option value="2-3">2–3</option><option value="4-6">4–6</option></select>
+      <select id="age" aria-label="Report age"><option value="">Any time</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select>
+    </div>
+    <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
+    <div class="scroll">
+      <div class="cols head"><span>Map</span><span>Levels</span><span>Best XP / hour</span><span>Best meso / hour</span><span>Spot</span><span>Party</span><span>Reports</span></div>
+      <div id="list"></div>
+      <div id="status" class="msg" hidden></div>
+    </div>
   </section>
 
-  <div id="status" class="msg">Loading reports…</div>
-  <div id="list" class="list"></div>
-
-  <footer>Rates are player-submitted estimates, not guaranteed results. Gear, route, party and uptime change the outcome.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener" style="color:inherit">OSMS Data Explorer</a> by @ohmi.</footer>
+  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi.</footer>
 </div>
 
 <script>
-/* ====== EDIT THESE THREE LINES ====== */
-const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjTg9xcf7wJ4nYy6Rg_OWhpaOu2BfHEPLkcLMi2pBOmH2jQyTiefuiE6hR2K_oCWAK_QjfykU-S1jU/pub?gid=702399574&single=true&output=csv";  // Sheet > File > Share > Publish to web > (responses tab) > CSV. Leave empty to see demo data.
+/* ====== YOUR LINKS ====== */
+const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjTg9xcf7wJ4nYy6Rg_OWhpaOu2BfHEPLkcLMi2pBOmH2jQyTiefuiE6hR2K_oCWAK_QjfykU-S1jU/pub?gid=702399574&single=true&output=csv";
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfNgBMdrfM-7W5Z3FxT0aJmV_ffxNWr3RMmB1Y8XkTJHtmhrg/viewform";
-const SHEET_URL = ""; // optional: the published sheet's regular link
-/* ==================================== */
-
+/* ======================== */
 document.getElementById("formLink").href = FORM_URL;
-const sheetBtn = document.getElementById("sheetLink");
-SHEET_URL ? sheetBtn.href = SHEET_URL : sheetBtn.hidden = true;
 
 const DEMO = `Timestamp,Map,Level,EXP/Hour,Net Meso/Hour,Difficulty to find map,Party Size,Character Stat Attack Range,Main Attacking Skill,Additional Notes,Party Average Level,Time to kill
-1,Henesys Hunting Ground I — Victoria Island,22,"1.2m",80k,1,3,300-650,Power Strike,Easy to find a party,22,4s
-2,Henesys Hunting Ground I — Victoria Island,24,"1,400,000",90k,2,4,320-700,Power Strike,,23,3s
-3,The Burnt Land II — Victoria Island,45,5.5m,210k,3,6,900-1800,Rush + Slash Blast,Bring pots,44,6s
-4,Dangerous Valley — Victoria Island,38,3m,150k,4,2,700-1400,Basic Attack,Needs plat for faster clear,37,8s`;
+1,Perilous Descent III — Victoria Island,56,200k,100k,5,5,900-1800,Power Strike,Busy map,55,4s
+2,Perilous Descent III — Victoria Island,56,220k,110k,5,5,950-1900,Power Strike,,56,4s
+3,Camp 2 — Victoria Island,63,210k,70k,,4,1100-2200,Rush + Slash Blast,,62,5s
+4,Drake Hunting Ground — Victoria Island,55,"190,000",60k,3,6,1000-2000,Basic Attack,,54,6s`;
 
-/* --- helpers --- */
-function parseCSV(text){
-  const rows=[];let row=[],cur="",q=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(q){ if(c=='"'){ if(text[i+1]=='"'){cur+='"';i++} else q=false } else cur+=c }
-    else if(c=='"') q=true;
-    else if(c==","){row.push(cur);cur=""}
-    else if(c=="\n"||c=="\r"){ if(c=="\r"&&text[i+1]=="\n")i++; row.push(cur);rows.push(row);row=[];cur="" }
-    else cur+=c;
-  }
+function parseCSV(t){const rows=[];let row=[],cur="",q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c=='"'){if(t[i+1]=='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c=='"')q=true; else if(c==","){row.push(cur);cur=""}
+    else if(c=="\n"||c=="\r"){if(c=="\r"&&t[i+1]=="\n")i++;row.push(cur);rows.push(row);row=[];cur=""}
+    else cur+=c}
   if(cur||row.length){row.push(cur);rows.push(row)}
-  return rows.filter(r=>r.some(x=>x.trim()));
-}
-function num(s){ // "100k", "1.5m", "100,000" -> number
-  if(s==null) return NaN;
-  const m=String(s).toLowerCase().replace(/[, ]/g,"").match(/^(\d*\.?\d+)([kmb])?/);
-  if(!m) return NaN;
-  return parseFloat(m[1])*({k:1e3,m:1e6,b:1e9}[m[2]]||1);
-}
-function range(s){ const m=String(s||"").replace(/,/g,"").match(/(\d+)\s*[-–to]+\s*(\d+)/); return m?[+m[1],+m[2]]:null }
-function median(a){ a=a.filter(Number.isFinite).sort((x,y)=>x-y); if(!a.length) return NaN; const h=a.length>>1; return a.length%2?a[h]:(a[h-1]+a[h])/2 }
-function fmt(n){ if(!Number.isFinite(n)) return "–"; return n>=1e6?(n/1e6).toFixed(n>=1e7?0:1)+"m":n>=1e3?Math.round(n/1e3)+"k":String(Math.round(n)) }
+  return rows.filter(r=>r.some(x=>x.trim()))}
+function num(s){if(s==null)return NaN;const m=String(s).toLowerCase().replace(/[, ]/g,"").match(/^(-?\d*\.?\d+)([kmb])?/);
+  return m?parseFloat(m[1])*({k:1e3,m:1e6,b:1e9}[m[2]]||1):NaN}
+function range(s){const m=String(s||"").replace(/,/g,"").match(/(\d+)\s*[-–]\s*(\d+)/);return m?[+m[1],+m[2]]:null}
+const fin=a=>a.filter(Number.isFinite);
+function median(a){a=fin(a).sort((x,y)=>x-y);if(!a.length)return NaN;const h=a.length>>1;return a.length%2?a[h]:(a[h-1]+a[h])/2}
+const full=n=>Number.isFinite(n)?Math.round(n).toLocaleString("en-US"):"–";
+const span=(a,f=x=>x)=>{a=fin(a);if(!a.length)return"–";const lo=Math.min(...a),hi=Math.max(...a);return lo===hi?f(lo):f(lo)+"-"+f(hi)};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-/* --- load + normalize --- */
 let obs=[];
-const col=(hdr,re)=>hdr.findIndex(h=>re.test(h.toLowerCase()));
+let DATA=[];
+const col=(h,re)=>{const c=h.map((x,i)=>re.test(x.toLowerCase())?i:-1).filter(i=>i>=0);
+  if(c.length<2)return c.length?c[0]:-1;
+  const cnt=i=>DATA.slice(1).filter(r=>(r[i]||"").trim()).length;
+  return c.sort((a,b)=>cnt(b)-cnt(a))[0]}; // if a header appears twice, use the one with data
+function normalize(rows){const h=rows[0];DATA=rows;
+  const ix={map:col(h,/^map/),lvl:col(h,/^level/),xp:col(h,/^e?xp/),meso:col(h,/meso/),diff:col(h,/difficulty/),party:col(h,/party size/),
+    partyLvl:col(h,/party average/),dmg:col(h,/damage|attack range/),skill:col(h,/skill/),notes:col(h,/notes/),ttk:col(h,/time to kill/),ts:col(h,/timestamp/),hide:col(h,/^hide/)};
+  return rows.slice(1).map(r=>{const f=(r[ix.map]||"").trim(),c=f.lastIndexOf(" — ");
+    return{map:c>0?f.slice(0,c):f,region:c>0?f.slice(c+3):"",level:num(r[ix.lvl]),xp:num(r[ix.xp]),meso:num(r[ix.meso]),diff:num(r[ix.diff]),
+      party:num(r[ix.party]),partyLvl:num(r[ix.partyLvl]),ttk:(r[ix.ttk]||"").trim(),dmg:range(r[ix.dmg]),dmgRaw:(r[ix.dmg]||"").trim(),
+      skill:(r[ix.skill]||"").trim(),notes:(r[ix.notes]||"").trim(),ts:/\d{4}/.test(r[ix.ts]||"")?Date.parse(r[ix.ts]):NaN,hide:ix.hide>=0&&(r[ix.hide]||"").trim()!==""}}).filter(o=>o.map&&Number.isFinite(o.xp)&&!o.hide)}
 
-function normalize(rows){
-  const h=rows[0];
-  const ix={map:col(h,/^map/),lvl:col(h,/^level/),xp:col(h,/^e?xp/),meso:col(h,/meso/),diff:col(h,/difficulty/),
-            party:col(h,/party size/),partyLvl:col(h,/party average/),dmg:col(h,/damage|attack range/),
-            skill:col(h,/skill/),notes:col(h,/notes/),ttk:col(h,/time to kill/)};
-  return rows.slice(1).map(r=>{
-    const full=(r[ix.map]||"").trim(), cut=full.lastIndexOf(" — ");
-    return {
-      map: cut>0?full.slice(0,cut):full, region: cut>0?full.slice(cut+3):"",
-      level:num(r[ix.lvl]), xp:num(r[ix.xp]), meso:num(r[ix.meso]), diff:num(r[ix.diff]),
-      party:num(r[ix.party]), partyLvl:num(r[ix.partyLvl]), ttk:(r[ix.ttk]||"").trim(), dmg:range(r[ix.dmg]), dmgRaw:(r[ix.dmg]||"").trim(),
-      skill:(r[ix.skill]||"").trim(), notes:(r[ix.notes]||"").trim()
-    };
-  }).filter(o=>o.map && Number.isFinite(o.xp));
-}
-
+const $=id=>document.getElementById(id);
 async function load(){
-  const st=document.getElementById("status"); st.hidden=false; st.textContent="Loading reports…";
-  try{
-    let text=DEMO;
-    if(CSV_URL){ const res=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"_="+Date.now()); if(!res.ok) throw new Error("HTTP "+res.status); text=await res.text(); }
-    obs=normalize(parseCSV(text));
-    if(!CSV_URL) st.textContent="Showing demo data. Set CSV_URL in index.html to use your sheet.";
-    else st.hidden=true;
-    render();
-  }catch(e){ st.textContent="Couldn't load reports ("+e.message+"). Check that the sheet is published to the web as CSV."; }
-}
+  $("status").hidden=false;$("status").textContent="Loading reports…";
+  try{let text=DEMO;
+    if(CSV_URL){const res=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"_="+Date.now());if(!res.ok)throw new Error("HTTP "+res.status);text=await res.text()}
+    obs=normalize(parseCSV(text));setupSkills();$("src").textContent=CSV_URL?"Live source":"Demo data";render()
+  }catch(e){$("status").textContent="Couldn’t load reports ("+e.message+"). Check that the sheet is published to the web as CSV."}}
 
-/* --- render --- */
+const agoStr=t=>{const d=Math.floor((Date.now()-t)/864e5);return d<1?"today":d<60?d+"d ago":Math.floor(d/30)+"mo ago"};
+function setupSkills(){const cur=$("skill").value||HASH.k||"";
+  $("skill").innerHTML='<option value="">Any skill</option>'+[...new Set(obs.map(o=>o.skill).filter(Boolean))].sort().map(x=>`<option>${esc(x)}</option>`).join("");
+  $("skill").value=cur}
 function render(){
-  const lv=parseFloat(lvl.value), tol=parseFloat(tol_.value)||0, q=qEl.value.trim().toLowerCase();
-  let rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol) &&
-    (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes).toLowerCase().includes(q)));
-
-  const levels=obs.map(o=>o.level).filter(Number.isFinite);
-  sObs.textContent=obs.length; sMaps.textContent=new Set(obs.map(o=>o.map+o.region)).size;
-  sLv.textContent=levels.length?Math.min(...levels)+"–"+Math.max(...levels):"–";
-
-  const groups=new Map();
-  rows.forEach(o=>{const k=o.map+"|"+o.region; (groups.get(k)||groups.set(k,[]).get(k)).push(o)});
-  const out=[...groups.values()].map(g=>({
-    g, map:g[0].map, region:g[0].region, n:g.length,
-    xp:median(g.map(o=>o.xp)), meso:median(g.map(o=>o.meso)), diff:median(g.map(o=>o.diff)),
-    lo:Math.min(...g.map(o=>o.level)), hi:Math.max(...g.map(o=>o.level)),
-    party:median(g.map(o=>o.party)), partyLvl:median(g.map(o=>o.partyLvl)),
-    dmg:g.some(o=>o.dmg)?fmt(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"–"+fmt(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
-    skill:Object.entries(g.reduce((m,o)=>(o.skill&&(m[o.skill]=(m[o.skill]||0)+1),m),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||""
-  })).sort((a,b)=>b.xp-a.xp);
-
-  list.innerHTML=out.map(m=>`
-    <details>
-      <summary>
-        <div><div class="map">${esc(m.map)}</div><div class="region">${esc(m.region)}</div></div>
-        <div class="xp">${fmt(m.xp)}<small>median XP/hr</small></div>
-        <div class="chips">
-          <span class="chip">Lv ${m.lo===m.hi?m.lo:m.lo+"–"+m.hi}</span>
-          ${Number.isFinite(m.meso)?`<span class="chip">${fmt(m.meso)} meso/hr</span>`:""}
-          ${Number.isFinite(m.diff)?`<span class="chip">Party search ${m.diff.toFixed(1)}/5</span>`:""}
-          ${Number.isFinite(m.party)?`<span class="chip">Party of ${Math.round(m.party)}</span>`:""}
-          ${Number.isFinite(m.partyLvl)?`<span class="chip">Avg party Lv ${Math.round(m.partyLvl)}</span>`:""}
-          ${m.dmg?`<span class="chip">Damage ${m.dmg}</span>`:""}
-          ${m.skill?`<span class="chip">${esc(m.skill)}</span>`:""}
-          <span class="chip">${m.n} report${m.n>1?"s":""}</span>
-        </div>
-      </summary>
-      <div class="detail"><table>
-        <tr><th>Level</th><th>XP/hr</th><th>Meso/hr</th><th>Party</th><th>Avg Lv</th><th>Damage</th><th>Time to kill</th><th>Skill</th><th>Notes</th></tr>
-        ${m.g.map(o=>`<tr><td>${o.level}</td><td>${fmt(o.xp)}</td><td>${fmt(o.meso)}</td><td>${Number.isFinite(o.party)?o.party:"–"}</td><td>${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td>${esc(o.dmgRaw)||"–"}</td><td>${esc(o.ttk)||"–"}</td><td>${esc(o.skill)||"–"}</td><td>${esc(o.notes)}</td></tr>`).join("")}
-      </table></div>
-    </details>`).join("");
-
-  if(!out.length && obs.length){ status_.hidden=false; status_.textContent="No reports match. Widen the level tolerance or clear the search."; }
-  else if(CSV_URL) status_.hidden=true;
-}
-
-const lvl=document.getElementById("lvl"), tol_=document.getElementById("tol"), qEl=document.getElementById("q"),
-      list=document.getElementById("list"), status_=document.getElementById("status"),
-      sObs=document.getElementById("sObs"), sMaps=document.getElementById("sMaps"), sLv=document.getElementById("sLv");
-[lvl,tol_,qEl].forEach(el=>el.addEventListener("input",render));
-document.getElementById("refresh").addEventListener("click",load);
+  const lv=parseFloat($("lvl").value),tol=parseFloat($("tol").value)||0,q=$("q").value.trim().toLowerCase(),
+    sk=$("skill").value,pt=$("party").value,ag=parseFloat($("age").value),sort=$("sort").value,
+    pr=pt?pt.split("-").map(Number):null,plo=pr?pr[0]:0,phi=pr?(pr[1]??pr[0]):99;
+  const rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol)&&
+    (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes+" "+o.dmgRaw).toLowerCase().includes(q))&&
+    (!sk||o.skill===sk)&&(!pt||(o.party>=plo&&o.party<=phi))&&(!ag||!Number.isFinite(o.ts)||Date.now()-o.ts<=ag*864e5));
+  const lvls=fin(obs.map(o=>o.level));
+  $("sObs").textContent=obs.length;$("sMaps").textContent=new Set(obs.map(o=>o.map+o.region)).size;
+  $("sLv").textContent=lvls.length?Math.min(...lvls)+"-"+Math.max(...lvls):"–";
+  const groups=new Map();rows.forEach(o=>{const k=o.map+"|"+o.region;(groups.get(k)||groups.set(k,[]).get(k)).push(o)});
+  const out=[...groups.values()].map(g=>{const ts=fin(g.map(o=>o.ts)),tk=fin(g.map(o=>parseFloat(o.ttk)));
+    return{g,map:g[0].map,region:g[0].region,n:g.length,xs:fin(g.map(o=>o.xp)),ms:fin(g.map(o=>o.meso)),diff:median(g.map(o=>o.diff)),
+      latest:ts.length?Math.max(...ts):NaN,ttk:tk.length?median(tk)+(g.map(o=>o.ttk).find(Boolean)||"").replace(/[\d.\s]/g,""):"",
+      dmg:g.some(o=>o.dmg)?full(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"-"+full(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
+      skill:Object.entries(g.reduce((m,o)=>(o.skill&&(m[o.skill]=(m[o.skill]||0)+1),m),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||""}});
+  const key={xp:m=>Math.max(...m.xs),meso:m=>m.ms.length?Math.max(...m.ms):-1e12,easy:m=>Number.isFinite(m.diff)?-m.diff:-99,reports:m=>m.n}[sort];
+  out.sort((a,b)=>key(b)-key(a));
+  const best=a=>{if(!a.length)return null;const hi=Math.max(...a),lo=Math.min(...a),md=median(a);
+    return{hi,flag:a.length>=3&&md>0&&hi>2*md,sub:a.length<2||lo===hi?"best":(a.length>=3?"median "+full(md)+" · ":"")+full(lo)+"-"+full(hi)}};
+  const cell=(b,c)=>b?`<div class="val ${c}">${full(b.hi)}${b.flag?'<span class="flag" title="Well above the other reports">⚠</span>':""}</div><div class="sm" style="grid-column:auto">${b.sub}</div>`:`<div class="val">–</div>`;
+  $("list").innerHTML=out.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}"><summary class="cols">
+      <div class="name"><i>›</i><b>${esc(m.map)}</b><small>${esc(m.region)}</small><small>${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}</small></div>
+      <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
+      <div data-label="Best XP / hour">${cell(best(m.xs),"xp")}</div><div data-label="Best meso / hour">${cell(best(m.ms),"meso")}</div>
+      <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
+      <div class="val plain" data-label="Party">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
+      <div class="detail"><p class="facts">${[m.dmg&&"Damage "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
+      <table><tr><th>Level</th><th>XP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party</th><th>Avg Lv</th><th>Damage</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
+      ${m.g.map(o=>`<tr><td>${full(o.level)}</td><td>${full(o.xp)}</td><td>${full(o.meso)}</td><td>${Number.isFinite(o.diff)?o.diff:"–"}</td><td>${Number.isFinite(o.party)?o.party:"–"}</td><td>${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td>${esc(o.dmgRaw)||"–"}</td><td>${esc(o.skill)||"–"}</td><td>${esc(o.ttk)||"–"}</td><td>${esc(o.notes)}</td></tr>`).join("")}
+      </table></div></details>`).join("");
+  $("count").textContent=rows.length+" observations · "+out.length+" maps";
+  const st=$("status");
+  if(!obs.length){st.hidden=false;st.textContent="No reports yet. Be the first to submit one."}
+  else if(!out.length){st.hidden=false;st.textContent="No reports match. Widen the level tolerance or clear the filters."}
+  else st.hidden=true}
+const F={l:"lvl",t:"tol",q:"q",s:"sort",k:"skill",p:"party",a:"age"};
+const HASH=Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+for(const[k,id]of Object.entries(F))if(HASH[k]&&k!=="k")$(id).value=HASH[k];
+function writeHash(){const p=new URLSearchParams();
+  for(const[k,id]of Object.entries(F)){const v=$(id).value;if(v&&!(id==="tol"&&v==="3")&&!(id==="sort"&&v==="xp"))p.set(k,v)}
+  history.replaceState(null,"",p.toString()?"#"+p:location.pathname+location.search)}
+Object.values(F).forEach(id=>$(id).addEventListener("input",()=>{render();writeHash()}));
+$("refresh").addEventListener("click",load);
 load();
 </script>
 </body>
