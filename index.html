@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v9 -->
+<!-- build: layout-v10 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#cde8ff">
@@ -170,7 +170,8 @@ td:last-child{min-width:220px}
 .pick .pv{font:800 .95rem var(--sans);color:var(--green)}
 .pgrid .pick:nth-child(2) .pv{color:var(--orange)}
 .star{color:var(--orange);font-weight:800}
-details.bestrow{background:#f4fbf5;box-shadow:inset 4px 0 0 var(--green)}
+details.bestrow{background:#f4fbf5;border-left:4px solid var(--green)}
+details.bestrow summary:hover{background:#e6f5ea}
 @media(max-width:720px){.picks{padding:0 1rem 1rem}.pgrid{grid-template-columns:1fr}.pick{padding:.6rem .8rem}}
 </style>
 </head>
@@ -215,7 +216,7 @@ details.bestrow{background:#f4fbf5;box-shadow:inset 4px 0 0 var(--green)}
     <div id="picks"></div>
     <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
     <div class="scroll">
-      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><span id="hXp">Median EXP / hour</span><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><span id="hMeso">Median meso / hour</span><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). Shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest. The line under it shows the average level of the party members." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
+      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><span id="hXp">Median EXP / hour</span><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><span id="hMeso">Median meso / hour</span><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). Shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
       <div id="list"></div>
       <div id="status" class="msg" hidden></div>
     </div>
@@ -304,7 +305,7 @@ function render(){
   $("sLv").textContent=lvls.length?Math.min(...lvls)+"-"+Math.max(...lvls):"–";
   const groups=new Map();rows.forEach(o=>{const k=o.map+"|"+o.region;(groups.get(k)||groups.set(k,[]).get(k)).push(o)});
   const out=[...groups.values()].map(g=>{const ts=fin(g.map(o=>o.ts)),tk=fin(g.map(o=>parseFloat(o.ttk)));
-    return{g,map:g[0].map,region:g[0].region,n:g.length,partyLvl:median(g.map(o=>o.partyLvl)),xs:fin(g.map(o=>o.xp)),ms:fin(g.map(o=>o.meso)),diff:median(g.map(o=>o.diff)),
+    return{g,map:g[0].map,region:g[0].region,n:g.length,xs:fin(g.map(o=>o.xp)),ms:fin(g.map(o=>o.meso)),diff:median(g.map(o=>o.diff)),
       latest:ts.length?Math.max(...ts):NaN,ttk:tk.length?median(tk)+(g.map(o=>o.ttk).find(Boolean)||"").replace(/[\d.\s]/g,""):"",
       dmg:g.some(o=>o.dmg)?full(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"-"+full(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
       skill:Object.entries(g.reduce((m,o)=>(o.skill&&(m[o.skill]=(m[o.skill]||0)+1),m),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||""}});
@@ -330,7 +331,7 @@ function render(){
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
       <div data-label="${lab} EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="${lab} meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
-      <div data-label="Party size"><div class="val plain">${span(m.g.map(o=>o.party))}</div>${Number.isFinite(m.partyLvl)?`<div class="sm" style="grid-column:auto">avg Lvl ${Math.round(m.partyLvl)}</div>`:""}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
+      <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
       <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
       <a class="addbtn" href="${reportUrl(m)}" target="_blank" rel="noopener">Add a report for this map ↗</a>
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lvl</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
