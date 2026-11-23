@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>Training Guide</title>
+<meta name="theme-color" content="#cde8ff">
+<meta name="description" content="Player-submitted EXP and meso rates, party sizes and attack ranges for Spearman training maps in MapleStory Classic World.">
+<meta property="og:title" content="Spearman Training Guide · MapleStory Classic">
+<meta property="og:description" content="Player-submitted EXP and meso rates, party sizes and attack ranges for Spearman training maps in MapleStory Classic World.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍁%3C/text%3E%3C/svg%3E">
+<title>Spearman Training Guide · MapleStory Classic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -90,6 +96,8 @@ details.stale summary{opacity:.6}
 .maplink{color:inherit;text-decoration:none}
 .maplink:hover{color:var(--blue);text-decoration:underline}
 .maplink span{color:var(--muted);font-size:.8em}
+.addbtn{display:inline-block;margin:0 0 1rem;padding:.5rem 1rem;border:2px solid var(--blue);border-radius:10px;color:var(--blue);font:800 .9rem var(--sans);text-decoration:none}
+.addbtn:hover{background:var(--blue);color:#fff}
 </style>
 </head>
 <body>
@@ -131,7 +139,7 @@ details.stale summary{opacity:.6}
     </div>
   </section>
 
-  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links open <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.</footer>
+  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links open <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
 </div>
 
 <script>
@@ -139,7 +147,10 @@ details.stale summary{opacity:.6}
 const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjTg9xcf7wJ4nYy6Rg_OWhpaOu2BfHEPLkcLMi2pBOmH2jQyTiefuiE6hR2K_oCWAK_QjfykU-S1jU/pub?gid=702399574&single=true&output=csv";
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfNgBMdrfM-7W5Z3FxT0aJmV_ffxNWr3RMmB1Y8XkTJHtmhrg/viewform";
 /* ======================== */
+const MAP_ENTRY = "entry.1915275961"; // the Map question's ID, from your pre-filled link
 document.getElementById("formLink").href = FORM_URL;
+function reportUrl(m){const label=m.region?m.map+" — "+m.region:m.map;
+  return FORM_URL.split("?")[0]+"?usp=pp_url&"+MAP_ENTRY+"="+encodeURIComponent(label)}
 
 const DEMO = `Timestamp,Map,Level,EXP/Hour,Net Meso/Hour,Difficulty to find map,Party Size,Character Stat Attack Range,Main Attacking Skill,Additional Notes,Party Average Level,Time to kill
 1,Perilous Descent III — Victoria Island,56,200k,100k,5,5,900-1800,Power Strike,Busy map,55,4s
@@ -218,6 +229,7 @@ function render(){
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
       <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
       <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Median time to kill "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
+      <a class="addbtn" href="${reportUrl(m)}" target="_blank" rel="noopener">Add a report for this map ↗</a>
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lv</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
       ${m.g.map(o=>`<tr><td>${full(o.level)}</td><td>${full(o.xp)}</td><td>${full(o.meso)}</td><td>${Number.isFinite(o.diff)?o.diff:"–"}</td><td>${Number.isFinite(o.party)?o.party:"–"}</td><td>${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td>${esc(o.dmgRaw)||"–"}</td><td>${esc(o.skill)||"–"}</td><td>${esc(o.ttk)||"–"}</td><td>${esc(o.notes)}</td></tr>`).join("")}
       </table></div></details>`).join("");
