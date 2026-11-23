@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v3 -->
+<!-- build: layout-v4 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#cde8ff">
@@ -28,8 +28,8 @@ body{margin:0;color:var(--ink);font:1rem/1.55 var(--sans);min-height:100vh;
   padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:1180px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 .hero{display:grid;grid-template-columns:1fr auto;gap:2rem 3rem;align-items:start}
-h1{font:600 clamp(2rem,6.2vw,4.6rem)/1.05 var(--display);letter-spacing:-.015em;margin:0 0 1rem;max-width:12em}
-.sub{color:var(--muted);font-size:1.15rem;max-width:34em;margin:0 0 1.4rem}
+h1{text-wrap:balance;font:600 clamp(2rem,6.2vw,4.6rem)/1.05 var(--display);letter-spacing:-.015em;margin:0 0 1rem;max-width:12em}
+.sub{text-wrap:pretty;color:var(--muted);font-size:1.15rem;max-width:34em;margin:0 0 1.4rem}
 .stats{font:700 .95rem var(--sans);color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap}
 .stats b{color:var(--blue);font-weight:800;font-size:1.1rem}
 .side{display:grid;gap:1rem;justify-items:end;min-width:340px}
@@ -59,8 +59,8 @@ summary{list-style:none;cursor:pointer;padding:1.2rem 1rem;border-radius:12px}
 summary:hover{background:#f3f9ff}
 summary::-webkit-details-marker{display:none}
 .name{display:grid;grid-template-columns:1.3rem 1fr;gap:.1rem .5rem}
-.name i{color:var(--blue);font:800 1.3rem/1.2 var(--sans);font-style:normal;transition:transform .15s}
-details[open] .name i{transform:rotate(90deg)}
+.name i{width:.55rem;height:.55rem;margin:.55rem 0 0 .2rem;border-right:2.5px solid var(--blue);border-bottom:2.5px solid var(--blue);transform:rotate(-45deg);transition:transform .15s}
+details[open] .name i{transform:rotate(45deg)}
 .name b{font:600 1.2rem var(--display);letter-spacing:-.005em}
 .name small,.sm{grid-column:2;font:600 .88rem var(--sans);color:var(--muted)}
 .val{font:800 1.12rem var(--sans);font-variant-numeric:tabular-nums}
@@ -266,7 +266,7 @@ function render(){
     return{hi,flag:a.length>=3&&md>0&&hi>2*md,sub:a.length<2||lo===hi?"best":(a.length>=3?"median "+full(md)+" · ":"")+full(lo)+"-"+full(hi)}};
   const cell=(b,c)=>b?`<div class="val ${c}">${full(b.hi)}${b.flag?'<span class="flag" title="Well above the other reports">⚠</span>':""}</div><div class="sm" style="grid-column:auto">${b.sub}</div>`:`<div class="val">–</div>`;
   $("list").innerHTML=out.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}"><summary class="cols">
-      <div class="name"><i>›</i><b>${mapLink(m)}</b><small>${esc(m.region)}</small><small>${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}</small></div>
+      <div class="name"><i></i><b>${mapLink(m)}</b><small>${esc(m.region)}</small><small>${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}</small></div>
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
       <div data-label="Best EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="Best meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
@@ -314,6 +314,7 @@ async function loadMapIds(){try{
   if(obs.length)render()}catch(e){}}
 function mapLink(m){const id=IDS.full.get(m.map+"|"+m.region)??IDS.name.get(m.map);
   return id==null?esc(m.map):`<a class="maplink" href="https://meowdb.com/msclassic/maps/${String(id).padStart(9,"0")}" target="_blank" rel="noopener" title="Open this map on NiaMeowDB">${esc(m.map)}<span aria-hidden="true"> ↗</span></a>`}
+if(matchMedia("(max-width:720px)").matches)$("q").placeholder="Search maps or notes…";
 load();
 loadMapIds();
 </script>
