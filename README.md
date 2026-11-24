@@ -9,11 +9,12 @@ Find your next training spot in MapleStory Classic World. This is a community-bu
 ## What it does
 
 - Lists training maps with the median (or best) EXP/hr and meso/hr reported by players.
-- Filters by your level (with a ± range), skill, party size and how recent the reports are.
+- Filters by your level (with a ± range), skill, time to kill, party size and how recent the reports are.
 - Shows top picks for your level: best EXP, best meso and easiest party to find.
 - Flags maps with limited data, and lists maps nobody has reported yet.
 - Expands each map to show every individual report, including attack range, skill, time to kill and notes.
 - Links each map name to its page on NiaMeowDB, and each map has an "Add a report" button that opens the form with that map pre-selected.
+- Remembers your level between visits and can copy a link to your current filters.
 - Works on phones and computers, follows your device's light or dark setting (with a manual switch), and keeps a saved copy of the data in case the spreadsheet can't be reached.
 
 ## How it works
