@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v16 -->
+<!-- build: layout-v18 -->
 <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
@@ -204,6 +204,44 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
 .linkbtn{font:700 .95rem var(--sans);color:var(--ink);background:var(--field);border:2px solid var(--line);border-radius:12px;padding:.65rem .9rem;cursor:pointer}
 .linkbtn:hover{border-color:var(--blue)}
 @media(max-width:720px){.linkbtn{grid-column:1/-1}}
+.hsort{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:.25rem}
+.hsort:hover,.hsort[aria-sort]{color:var(--ink)}
+.arr{font-size:.65em}
+.pin,.cmpb{margin-left:.4rem;background:none;border:0;cursor:pointer;color:var(--muted);font:700 .95rem var(--sans);padding:0 .15rem;vertical-align:middle}
+.pin:hover,.cmpb:hover{color:var(--ink)}
+.pin.on{color:var(--orange)}
+.cmpb.on{color:var(--blue)}
+.linkbtn.on{border-color:var(--blue);color:var(--blue)}
+.latest{margin-top:1rem}
+.lh{font:800 .9rem var(--sans);color:var(--muted);margin:0 0 .5rem}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem}
+.lrow{display:grid;gap:.1rem;text-align:left;font:inherit;color:var(--ink);background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:.7rem .9rem;cursor:pointer}
+.lrow:hover{border-color:var(--blue)}
+.lrow b{font:600 1rem var(--display)}
+.lrow span{color:var(--green);font-weight:800;font-size:.9rem}
+.lrow small{color:var(--muted)}
+#more{padding:.5rem 0 1rem}
+#cmpbar{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:20;display:flex;gap:.6rem;align-items:center;background:var(--tipbg);color:var(--tipfg);padding:.55rem .6rem .55rem 1.1rem;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-weight:700;font-size:.9rem}
+#cmpbar[hidden]{display:none}
+#cmpbar{white-space:nowrap;max-width:calc(100vw - 1.5rem)}
+@media(max-width:720px){#cmpbar{padding-left:.9rem;gap:.4rem;font-size:.82rem}#cmpbar button{padding:.4rem .8rem}}
+#cmpbar button{font:700 .9rem var(--sans);border:0;border-radius:999px;padding:.45rem 1rem;cursor:pointer}
+#cmpgo{background:var(--cta);color:#fff}
+#cmpgo:disabled{opacity:.45;cursor:default}
+#cmpclear{background:transparent;color:inherit;text-decoration:underline}
+dialog{background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:20px;padding:1.2rem 1.3rem;width:min(900px,94vw)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.dh h2{margin:0;font:600 1.3rem var(--display)}
+#cmpclose{background:none;border:0;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:.3rem .5rem;border-radius:8px}
+#cmpclose:hover{color:var(--ink);background:var(--btn)}
+.cmpg{display:grid;gap:.6rem 1rem;align-items:start;grid-template-columns:8rem repeat(var(--n,2),minmax(0,1fr))}
+@media(max-width:720px){.cmpg{grid-template-columns:5.2rem repeat(var(--n,2),minmax(0,1fr));font-size:.9rem;gap:.5rem .6rem}dialog{padding:1rem}}
+.cmpg .ch{font:600 1.05rem var(--display)}
+.cmpg .ch small{display:block;color:var(--muted);font:600 .8rem var(--sans)}
+.cmpg .cl,.cmpg .cv{border-top:1px solid var(--line);padding-top:.55rem}
+.cmpg .cl{color:var(--muted);font-weight:800;font-size:.85rem}
+.cmpg .cv{font-weight:700}
 </style>
 </head>
 <body>
@@ -232,7 +270,9 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
     <li><b>Spot</b> is how hard it is to find a party on the map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). The badge goes from green (easy) to red (hard).</li>
     <li>A <b>⚠</b> means the best report is far above the others, so treat it with caution.</li>
     <li><b>Limited data</b> means fewer than 3 reports.</li>
+    <li><b>Time per level</b> shows under the EXP number once you enter your level. It divides the EXP you need for your next level by that map’s EXP/hr, so treat it as a rough guide.</li>
     <li>Everything is a player estimate. Gear, route, party and uptime change the result.</li></ul></details>
+  <section id="latest" class="latest"></section>
   <section class="panel">
     <div class="bar">
       <div class="searchbox"><svg class="sicon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search maps, notes, or attack range…" aria-label="Search"><button id="clearq" type="button" aria-label="Clear search" hidden>✕</button></div>
@@ -240,24 +280,28 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
     </div>
     <div class="filters">
       <select id="stat" aria-label="Show median or best values"><option value="med">Show: median</option><option value="best">Show: best</option></select>
-      <select id="sort" aria-label="Sort by"><option value="xp">Sort: EXP</option><option value="meso">Sort: meso</option><option value="easy">Sort: easiest party</option><option value="kill">Sort: fastest kill</option><option value="reports">Sort: most reports</option></select>
+      <select id="sort" aria-label="Sort by"><option value="xp">Sort: EXP</option><option value="meso">Sort: meso</option><option value="easy">Sort: easiest party</option><option value="kill">Sort: fastest kill</option><option value="name">Sort: name (A–Z)</option><option value="levels">Sort: level (low to high)</option><option value="reports">Sort: most reports</option></select>
       <select id="skill" aria-label="Skill"><option value="">Any skill</option></select>
       <select id="kill" aria-label="Time to kill"><option value="">Any kill time</option><option>One shot</option><option>Two shots</option><option>Three shots</option><option>Four+ shots</option></select>
       <select id="party" aria-label="Party size"><option value="">Any party size</option><option value="1">Solo</option><option value="2-3">2–3</option><option value="4-6">4–6</option></select>
-      <select id="age" aria-label="Report age"><option value="">Any time</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select>
+      <select id="age" aria-label="Report age"><option value="">Reports: any time</option><option value="30">Reports: last 30 days</option><option value="90">Reports: last 90 days</option></select>
+      <button id="pinfilter" class="linkbtn" type="button" aria-pressed="false">★ Pinned (0)</button>
       <button id="copy" class="linkbtn" type="button">Copy link to this view</button>
     </div>
     <div id="picks"></div>
     <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
     <div class="scroll">
-      <div class="cols head"><span>Map<button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span>Levels<button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><span id="hXp">Median EXP / hour</span><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><span id="hMeso">Median meso / hour</span><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span>Spot<button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). The badge runs from green (easy) to red (hard) and shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span>Reports<button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
+      <div class="cols head"><span><button class="hsort" type="button" data-sort="name">Map<span class="arr"></span></button><button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span><button class="hsort" type="button" data-sort="levels">Levels<span class="arr"></span></button><button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><button class="hsort" type="button" data-sort="xp"><span id="hXp">Median EXP / hour</span><span class="arr"></span></button><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><button class="hsort" type="button" data-sort="meso"><span id="hMeso">Median meso / hour</span><span class="arr"></span></button><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span><button class="hsort" type="button" data-sort="easy">Spot<span class="arr"></span></button><button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). The badge runs from green (easy) to red (hard) and shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span><button class="hsort" type="button" data-sort="reports">Reports<span class="arr"></span></button><button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
       <div id="list"></div>
+      <div id="more"></div>
       <div id="status" class="msg" hidden></div>
     </div>
     <div id="missing"></div>
   </section>
 
-  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links open <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
+  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links and the EXP table come from <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
+  <div id="cmpbar" hidden role="status"><span id="cmptxt"></span><button id="cmpgo" type="button">Compare</button><button id="cmpclear" type="button">Clear</button></div>
+  <dialog id="cmpdlg" aria-labelledby="cmph"><div class="dh"><h2 id="cmph">Compare maps</h2><button id="cmpclose" type="button" aria-label="Close">✕</button></div><div id="cmpbody"></div></dialog>
 </div>
 
 <script>
@@ -293,7 +337,8 @@ const full=n=>Number.isFinite(n)?Math.round(n).toLocaleString("en-US"):"–";
 const span=(a,f=x=>x)=>{a=fin(a);if(!a.length)return"–";const lo=Math.min(...a),hi=Math.max(...a);return lo===hi?f(lo):f(lo)+"-"+f(hi)};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let obs=[];
+let obs=[],flipFor=null,latestFor=null,showAll=false,pinOnly=false,pins=new Set(),cmp=new Set();
+try{pins=new Set(JSON.parse(localStorage.getItem("pins")||"[]"))}catch(_){}
 let DATA=[];
 const col=(h,re)=>{const c=h.map((x,i)=>re.test(x.toLowerCase())?i:-1).filter(i=>i>=0);
   if(c.length<2)return c.length?c[0]:-1;
@@ -335,7 +380,7 @@ function render(){
     pr=pt?pt.split("-").map(Number):null,plo=pr?pr[0]:0,phi=pr?(pr[1]??pr[0]):99;
   const rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol)&&
     (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes+" "+o.dmgRaw).toLowerCase().includes(q))&&
-    (!sk||o.skills.includes(sk))&&(!kl||o.tcat===kl)&&(!pt||(o.party>=plo&&o.party<=phi))&&(!ag||!Number.isFinite(o.ts)||Date.now()-o.ts<=ag*864e5));
+    (!sk||o.skills.includes(sk))&&(!kl||o.tcat===kl)&&(!pinOnly||pins.has(o.map+"|"+o.region))&&(!pt||(o.party>=plo&&o.party<=phi))&&(!ag||!Number.isFinite(o.ts)||Date.now()-o.ts<=ag*864e5));
   const lvls=fin(obs.map(o=>o.level));
   $("sObs").textContent=obs.length;$("sMaps").textContent=new Set(obs.map(o=>o.map+o.region)).size;
   $("sLv").textContent=lvls.length?Math.min(...lvls)+"-"+Math.max(...lvls):"–";
@@ -345,14 +390,23 @@ function render(){
       latest:ts.length?Math.max(...ts):NaN,ttk:tt?tt[0].toLowerCase()+" ("+tt[1]+" of "+tc.length+")":"",
       dmg:g.some(o=>o.dmg)?full(median(g.map(o=>o.dmg?o.dmg[0]:NaN)))+"-"+full(median(g.map(o=>o.dmg?o.dmg[1]:NaN))):"",
       skill:Object.entries(g.reduce((m,o)=>(o.skills.forEach(k=>m[k]=(m[k]||0)+1),m),{})).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(", ")}});
-  const key={xp:m=>typ?median(m.xs):Math.max(...m.xs),meso:m=>m.ms.length?(typ?median(m.ms):Math.max(...m.ms)):-1e12,easy:m=>Number.isFinite(m.diff)?-m.diff:-99,reports:m=>m.n,kill:m=>Number.isFinite(m.shots)?-m.shots:-99}[sort];
-  out.sort((a,b)=>key(b)-key(a));
+  const key={xp:m=>typ?median(m.xs):Math.max(...m.xs),meso:m=>m.ms.length?(typ?median(m.ms):Math.max(...m.ms)):-1e12,easy:m=>Number.isFinite(m.diff)?-m.diff:-99,reports:m=>m.n,levels:m=>-Math.min(...m.g.map(o=>o.level)),name:m=>0,kill:m=>Number.isFinite(m.shots)?-m.shots:-99}[sort];
+  const fl=flipFor===sort?-1:1;
+  out.sort(sort==="name"?(a,b)=>fl*a.map.localeCompare(b.map):(a,b)=>fl*(key(b)-key(a)));
+  const asc=["name","levels","easy","kill"].includes(sort)!==(fl===-1);
+  document.querySelectorAll(".hsort").forEach(b=>{const on=b.dataset.sort===sort;b.querySelector(".arr").textContent=on?(asc?"▲":"▼"):"";
+    if(on)b.setAttribute("aria-sort",asc?"ascending":"descending");else b.removeAttribute("aria-sort")});
   const lab=typ?"Median":"Best";$("hXp").textContent=lab+" EXP / hour";$("hMeso").textContent=lab+" meso / hour";
   const best=a=>{if(!a.length)return null;const hi=Math.max(...a),lo=Math.min(...a),md=median(a);
     if(typ)return{v:md,flag:false,sub:a.length<2?"only report":full(lo)+"-"+full(hi)};
     return{v:hi,flag:a.length>=3&&md>0&&hi>2*md,sub:a.length<2||lo===hi?"best":(a.length>=3?"median "+full(md)+" · ":"")+full(lo)+"-"+full(hi)}};
-  const cell=(b,c)=>b?`<div class="val ${c}">${full(b.v)}${b.flag?'<span class="flag" title="Well above the other reports">⚠</span>':""}</div><div class="sm" style="grid-column:auto">${b.sub}</div>`:`<div class="val">–</div>`;
+  const cell=(b,c)=>b?`<div class="val ${c}">${full(b.v)}${b.flag?'<span class="flag" title="Well above the other reports">⚠</span>':""}</div><div class="sm" style="grid-column:auto">${b.sub}</div>${c==="xp"&&hasNeed&&b.v>0?`<div class="sm" style="grid-column:auto">≈ ${fmtH(need/b.v)} per level</div>`:""}`:`<div class="val">–</div>`;
   const val=a=>a.length?(typ?median(a):Math.max(...a)):-1;
+  const need=Number.isFinite(lv)?expNext(Math.round(lv)):NaN,hasNeed=Number.isFinite(need);
+  const pct=m=>{const q=val(m.xs)/need*100;return q>=10?Math.round(q)+"%":q.toFixed(1)+"%"};
+  const hrs=v=>hasNeed&&v>0?" · ≈"+fmtH(need/v)+" per level":"";
+  const pinBtn=m=>{const k=m.map+"|"+m.region,on=pins.has(k),c=cmp.has(k);
+    return `<button class="pin${on?" on":""}" type="button" data-k="${esc(k)}" aria-pressed="${on}" aria-label="Pin ${esc(m.map)}" title="Pin this map">${on?"★":"☆"}</button><button class="cmpb${c?" on":""}" type="button" data-k="${esc(k)}" aria-pressed="${c}" aria-label="Compare ${esc(m.map)}" title="Add to compare">⇄</button>`};
   let picks=null;
   if(Number.isFinite(lv)&&out.length){
     const big=out.filter(m=>m.n>=3),pool=big.length?big:out;
@@ -361,19 +415,21 @@ function render(){
     picks={e:[...pool].sort((a,b)=>val(b.xs)-val(a.xs))[0],me,ez,thin:!big.length};
   }
   const card=(t,m,v)=>m?`<button type="button" class="pick" data-k="${esc(m.map+"|"+m.region)}"><span class="pl">${t}</span><b>${esc(m.map)}</b><span class="pv">${v}</span></button>`:"";
-  $("picks").innerHTML=picks?`<div class="picks"><p class="note">Top picks for level ${lv} (±${tol})${picks.thin?" · few reports so far, so take these lightly":""}</p><div class="pgrid">${card(lab+" EXP",picks.e,full(val(picks.e.xs))+" EXP/hr")}${card(lab+" meso",picks.me,picks.me?full(val(picks.me.ms))+" meso/hr":"")}${card("Easiest party",picks.ez,picks.ez?"Spot "+Math.round(picks.ez.diff):"")}</div></div>`:"";
-  $("list").innerHTML=out.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}${picks&&m===picks.e?" bestrow":""}" data-k="${esc(m.map+"|"+m.region)}"><summary class="cols">
-      <div class="name"><i></i><b>${mapLink(m)}</b><small>${esc(m.region)}</small><small>${picks&&m===picks.e?'<span class="star">★ Best match</span> · ':""}${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}${m.n<3?' · <span class="thin">limited data</span>':""}</small></div>
+  $("picks").innerHTML=picks?`<div class="picks"><p class="note">Top picks for level ${lv} (±${tol})${picks.thin?" · few reports so far, so take these lightly":""}</p><div class="pgrid">${card(lab+" EXP",picks.e,full(val(picks.e.xs))+" EXP/hr"+hrs(val(picks.e.xs)))}${card(lab+" meso",picks.me,picks.me?full(val(picks.me.ms))+" meso/hr":"")}${card("Easiest party",picks.ez,picks.ez?"Spot "+Math.round(picks.ez.diff):"")}</div></div>`:"";
+  const shown=showAll?out:out.slice(0,25);
+  $("list").innerHTML=shown.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}${picks&&m===picks.e?" bestrow":""}" data-k="${esc(m.map+"|"+m.region)}"><summary class="cols">
+      <div class="name"><i></i><b>${mapLink(m)}${pinBtn(m)}</b><small>${esc(m.region)}</small><small>${picks&&m===picks.e?'<span class="star">★ Best match</span> · ':""}${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}${m.n<3?' · <span class="thin">limited data</span>':""}</small></div>
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
       <div data-label="${lab} EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="${lab} meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge s${Math.min(5,Math.max(1,Math.round(m.diff)))}">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
       <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
-      <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Time to kill: "+m.ttk].filter(Boolean).join(" · ")||"&nbsp;"}</p>
+      <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Time to kill: "+m.ttk,hasNeed&&val(m.xs)>0&&"At level "+Math.round(lv)+": about "+pct(m)+" of a level per hour"].filter(Boolean).join(" · ")||"&nbsp;"}</p>
       <a class="addbtn" href="${reportUrl(m)}" target="_blank" rel="noopener">Add a report for this map ↗</a>
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lvl</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
       ${m.g.map(o=>`<tr><td data-label="Level">${full(o.level)}</td><td data-label="EXP/hr">${full(o.xp)}</td><td data-label="Meso/hr">${full(o.meso)}</td><td data-label="Spot">${Number.isFinite(o.diff)?o.diff:"–"}</td><td data-label="Party size">${Number.isFinite(o.party)?o.party:"–"}</td><td data-label="Avg Lvl">${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td data-label="Attack range">${esc(o.dmgRaw)||"–"}</td><td data-label="Skill">${esc(o.skill)||"–"}</td><td data-label="Time to kill">${esc(o.ttk)||"–"}</td><td data-label="Notes">${esc(o.notes)}</td></tr>`).join("")}
       </table></div></details>`).join("");
-  $("count").textContent=rows.length+" observations · "+out.length+" maps";renderMissing();
+  $("count").textContent=rows.length+" observations · "+out.length+" maps";renderMissing();renderMore(out.length);
+  if(latestFor!==obs){latestFor=obs;renderLatest()}
   const st=$("status");
   if(!obs.length){st.hidden=false;st.textContent="No reports yet. Be the first to submit one."}
   else if(!out.length){st.hidden=false;st.textContent="No reports match. Widen the level tolerance or clear the filters."}
@@ -419,7 +475,7 @@ async function loadMapIds(){try{
   seen.forEach((ids,n)=>{if(ids.size===1)IDS.name.set(n,[...ids][0])});
   if(obs.length)render();else renderMissing()}catch(e){}}
 function mapLink(m){const id=IDS.full.get(m.map+"|"+m.region)??IDS.name.get(m.map);
-  return id==null?esc(m.map):`<a class="maplink" href="https://meowdb.com/msclassic/maps/${String(id).padStart(9,"0")}" target="_blank" rel="noopener" title="Open this map on NiaMeowDB">${esc(m.map)}<span aria-hidden="true"> ↗</span></a>`}
+  return id==null?esc(m.map):`<a class="maplink" href="https://meowdb.com/msclassic/maps/${String(id).padStart(9,"0")}" target="_blank" rel="noopener" title="Open this map on NiaMeowDB">${esc(m.map)}<span aria-hidden="true">&nbsp;↗</span></a>`}
 if(matchMedia("(max-width:720px)").matches)$("q").placeholder="Search maps or notes…";
 $("picks").addEventListener("click",e=>{const b=e.target.closest(".pick");if(!b)return;
   const d=[...$("list").children].find(x=>x.dataset.k===b.dataset.k);if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})}});
@@ -439,6 +495,53 @@ $("copy").addEventListener("click",async()=>{writeHash();const b=$("copy"),old=b
   try{await navigator.clipboard.writeText(location.href);b.textContent="Link copied"}catch(e){prompt("Copy this link:",location.href)}
   setTimeout(()=>b.textContent=old,1500)});
 try{if(!localStorage.getItem("seenHowto")){$("howto").open=true;localStorage.setItem("seenHowto","1")}}catch(_){}
+/* EXP needed to go from level L to L+1 (formulas published by NiaMeowDB; matches its table) */
+const EXPN=(()=>{const a=[0];for(let L=1;L<=99;L++){let e;if(L<=5)e=(Math.floor(L*L/2)+15)*L;else if(L<=50){const q=Math.floor(L*L/3);e=(q+19)*q}
+  else if(L<=89)e=Math.trunc(a[L-1]*1.0548);else e=Math.trunc(a[L-1]*2.1);a[L]=e}return a})();
+const expNext=L=>L>=1&&L<=99?EXPN[L]:NaN;
+const fmtH=h=>h<1?Math.max(1,Math.round(h*60))+" min":h<10?h.toFixed(1)+" h":Math.round(h)+" h";
+
+function renderMore(n){$("more").innerHTML=n>25?`<button id="showall" class="linkbtn" type="button">${showAll?"Show top 25 only":"Show all "+n+" maps"}</button>`:""}
+function renderLatest(){const r=obs.filter(o=>Number.isFinite(o.ts)).sort((a,b)=>b.ts-a.ts).slice(0,5);
+  $("latest").innerHTML=r.length?`<h2 class="lh">Latest reports</h2><div class="lgrid">${r.map(o=>`<button type="button" class="lrow" data-k="${esc(o.map+"|"+o.region)}"><b>${esc(o.map)}</b><span>Lv ${full(o.level)} · ${full(o.xp)} EXP/hr</span><small>${agoStr(o.ts)}</small></button>`).join("")}</div>`:""}
+function openMap(k){const find=()=>[...$("list").children].find(x=>x.dataset.k===k);let d=find();
+  if(!d){["lvl","q","skill","kill","party","age"].forEach(id=>$(id).value="");pinOnly=false;showAll=true;pinLabel();syncClear();render();writeHash();d=find()}
+  if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})}}
+function pinLabel(){const b=$("pinfilter");b.textContent="★ Pinned ("+pins.size+")";b.classList.toggle("on",pinOnly);b.setAttribute("aria-pressed",String(pinOnly))}
+function cmpBar(msg){const n=cmp.size;$("cmpbar").hidden=!n;$("cmptxt").textContent=msg||n+" selected"+(n<2?" · pick at least 2":" · up to 3");$("cmpgo").disabled=n<2}
+function cmpStats(k){const g=obs.filter(o=>o.map+"|"+o.region===k);if(!g.length)return null;
+  const xs=fin(g.map(o=>o.xp)),ms=fin(g.map(o=>o.meso)),sc={},tn={};
+  g.forEach(o=>{o.skills.forEach(x=>sc[x]=(sc[x]||0)+1);if(o.tcat)tn[o.tcat]=(tn[o.tcat]||0)+1});
+  const tt=Object.entries(tn).sort((a,b)=>b[1]-a[1])[0];
+  return{name:g[0].map,region:g[0].region,n:g.length,lv:span(g.map(o=>o.level)),xpMed:median(xs),xpBest:xs.length?Math.max(...xs):NaN,msMed:median(ms),
+    diff:median(g.map(o=>o.diff)),party:span(g.map(o=>o.party)),skills:Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(", ")||"–",kill:tt?tt[0]:"–"}}
+function openCmp(){const rs=[...cmp].map(cmpStats).filter(Boolean);if(rs.length<2)return;
+  const lvN=parseFloat($("lvl").value),nd=Number.isFinite(lvN)?expNext(Math.round(lvN)):NaN;
+  const row=(l,f)=>`<div class="cl">${l}</div>${rs.map(r=>`<div class="cv">${f(r)}</div>`).join("")}`;
+  $("cmpbody").innerHTML=`<div class="cmpg" style="--n:${rs.length}"><div></div>${rs.map(r=>`<div class="ch">${esc(r.name)}<small>${esc(r.region)}</small></div>`).join("")}
+    ${row("Levels",r=>r.lv)}${row("Median EXP / hr",r=>full(r.xpMed))}${row("Best EXP / hr",r=>full(r.xpBest))}${row("Median meso / hr",r=>full(r.msMed))}
+    ${Number.isFinite(nd)?row("Per level at "+Math.round(lvN),r=>r.xpMed>0?"≈ "+fmtH(nd/r.xpMed):"–"):""}
+    ${row("Spot (1-5)",r=>Number.isFinite(r.diff)?Math.round(r.diff):"–")}${row("Party size",r=>r.party)}${row("Top skills",r=>esc(r.skills))}${row("Time to kill",r=>esc(r.kill))}${row("Reports",r=>r.n)}</div>`;
+  $("cmpdlg").showModal()}
+
+document.querySelectorAll(".hsort").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.sort;
+  if($("sort").value===k)flipFor=flipFor===k?null:k;else{$("sort").value=k;flipFor=null}render();writeHash()}));
+$("more").addEventListener("click",e=>{if(e.target.id==="showall"){showAll=!showAll;render()}});
+$("latest").addEventListener("click",e=>{const b=e.target.closest(".lrow");if(b)openMap(b.dataset.k)});
+$("pinfilter").addEventListener("click",()=>{pinOnly=!pinOnly;pinLabel();render()});
+$("list").addEventListener("click",e=>{
+  const p=e.target.closest(".pin"),c=e.target.closest(".cmpb");
+  if(p){e.preventDefault();e.stopPropagation();const k=p.dataset.k;pins.has(k)?pins.delete(k):pins.add(k);
+    p.classList.toggle("on",pins.has(k));p.textContent=pins.has(k)?"★":"☆";p.setAttribute("aria-pressed",String(pins.has(k)));
+    try{localStorage.setItem("pins",JSON.stringify([...pins]))}catch(_){}pinLabel();if(pinOnly)render()}
+  if(c){e.preventDefault();e.stopPropagation();const k=c.dataset.k;
+    if(cmp.has(k))cmp.delete(k);else if(cmp.size>=3){cmpBar("You can compare up to 3 maps");setTimeout(()=>cmpBar(),1800);return}else cmp.add(k);
+    c.classList.toggle("on",cmp.has(k));c.setAttribute("aria-pressed",String(cmp.has(k)));cmpBar()}});
+$("cmpgo").addEventListener("click",openCmp);
+$("cmpclear").addEventListener("click",()=>{cmp.clear();document.querySelectorAll(".cmpb.on").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-pressed","false")});cmpBar()});
+$("cmpclose").addEventListener("click",()=>$("cmpdlg").close());
+$("cmpdlg").addEventListener("click",e=>{if(e.target===$("cmpdlg"))$("cmpdlg").close()});
+pinLabel();
 load();
 loadMapIds();
 </script>
