@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v18 -->
+<!-- build: layout-v21 -->
 <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
@@ -20,13 +20,13 @@
 <title>Bandit Training Guide · MapleStory Classic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f4faff; --panel:#ffffff; --field:#f1f7fd; --line:#cbddf0; --ink:#14264a; --muted:#4a5f82;
   --green:#1b8a36; --orange:#b45309; --blue:#1d4ed8; --blue-dark:#173fb0; --cta:#1d4ed8; --cta-dark:#173fb0; --on-blue:#fff; --sky1:#cde8ff; --sky2:#e8f4ff; --btn:#e4effb; --btn-hover:#d6e6f8; --hover:#f3f9ff; --badge-bg:#d9f4e0; --badge-none:#e6edf6; --soft:#eef6ff; --best:#f4fbf5; --best-hover:#e6f5ea; --howto:rgba(255,255,255,.75); --tipbg:#14264a; --tipfg:#fff; --ph:#5f7394; color-scheme:light;
-  --sans:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --display:"Fredoka","Nunito",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 *{box-sizing:border-box}
 html{font-size:14.5px}
@@ -35,13 +35,13 @@ body{margin:0;color:var(--ink);font:1rem/1.55 var(--sans);min-height:100vh;
   padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:1180px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 .hero{display:grid;grid-template-columns:1fr auto;gap:2rem 3rem;align-items:start}
-h1{text-wrap:balance;font:600 clamp(2rem,4.6vw,3.4rem)/1.05 var(--display);letter-spacing:-.015em;margin:0 0 1rem;max-width:none}
+h1{text-wrap:balance;font:700 clamp(2rem,4.6vw,3.4rem)/1.08 var(--display);letter-spacing:-.03em;margin:0 0 1rem;max-width:none}
 .sub{text-wrap:pretty;color:var(--muted);font-size:1.05rem;max-width:34em;margin:0 0 1.4rem}
 .stats{font:700 .95rem var(--sans);color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap}
-.stats b{color:var(--blue);font-weight:800;font-size:1.1rem}
+.stats b{color:var(--blue);font-weight:700;font-size:1.1rem}
 .side{display:grid;gap:1rem;justify-items:end;min-width:340px}
 .finder{display:flex;align-items:center;gap:.8rem;width:100%;padding:1.2rem 1.4rem;border:2px solid var(--line);border-radius:20px;background:var(--panel)}
-.finder strong{font-weight:800;flex:1;font-size:1.05rem}
+.finder strong{font-weight:700;flex:1;font-size:1.05rem}
 .finder span{font:700 .9rem var(--sans);color:var(--muted)}
 .finder input{width:5rem;padding:.7rem .5rem;text-align:center}
 input{font:700 1rem var(--sans);color:var(--ink);background:var(--field);border:2px solid var(--line);border-radius:12px}
@@ -58,8 +58,8 @@ input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{o
 .meta{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding:1.1rem 1.5rem .8rem;font:700 .9rem var(--sans);color:var(--muted)}
 .meta .live{color:var(--green)}
 .scroll{overflow-x:auto;padding:0 1.5rem 1rem}
-.cols{display:grid;grid-template-columns:minmax(220px,2.6fr) .8fr 1.5fr 1.5fr .7fr 1fr 1fr;gap:1rem;align-items:start;min-width:860px}
-.head{padding:.8rem 1rem;border-bottom:2px solid var(--line);font:800 .85rem var(--sans);color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(220px,2.6fr) minmax(0,.8fr) minmax(0,1.5fr) minmax(0,1.5fr) minmax(0,.7fr) minmax(0,1fr) minmax(0,1fr);gap:1rem;align-items:start;min-width:860px}
+.head{padding:.8rem 1rem;border-bottom:2px solid var(--line);font:700 .85rem var(--sans);color:var(--muted)}
 details{border-bottom:1px solid var(--line)}
 details:last-child{border-bottom:0}
 summary{list-style:none;cursor:pointer;padding:1.2rem 1rem;border-radius:12px}
@@ -70,17 +70,17 @@ summary::-webkit-details-marker{display:none}
 details[open] .name i{transform:rotate(45deg)}
 .name b{font:600 1.12rem var(--display);letter-spacing:-.005em}
 .name small,.sm{grid-column:2;font:600 .88rem var(--sans);color:var(--muted)}
-.val{font:800 1.05rem var(--sans);font-variant-numeric:tabular-nums}
+.val{font:700 1.05rem var(--sans);font-variant-numeric:tabular-nums}
 .val.xp{color:var(--green)} .val.meso{color:var(--orange)}
 .val.plain{font-weight:700;font-size:1.05rem}
-.badge{display:inline-grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:12px;background:var(--badge-bg);color:var(--green);font:800 1.1rem var(--sans)}
+.badge{display:inline-grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:12px;background:var(--badge-bg);color:var(--green);font:700 1.1rem var(--sans)}
 .badge.none{background:var(--badge-none);color:var(--muted)}
 .detail{padding:0 1rem 1.4rem 2.8rem;overflow-x:auto}
 .facts{font:700 .9rem var(--sans);color:var(--muted);margin:0 0 .8rem}
 table{border-collapse:collapse;width:100%;min-width:780px;font-size:.93rem}
 th,td{text-align:left;padding:.5rem .6rem;border-top:1px solid var(--line);vertical-align:top}
-th{font:800 .8rem var(--sans);color:var(--muted)}
-td:nth-child(2){color:var(--green);font-weight:800} td:nth-child(3){color:var(--orange);font-weight:800}
+th{font:700 .8rem var(--sans);color:var(--muted)}
+td:nth-child(2){color:var(--green);font-weight:700} td:nth-child(3){color:var(--orange);font-weight:700}
 .msg{padding:2.5rem 1rem;color:var(--muted);font-weight:700}
 footer{margin-top:2rem;color:var(--muted);font-size:.92rem;max-width:44em}
 footer a{color:inherit}
@@ -95,10 +95,10 @@ details.stale summary{opacity:.6}
   .cols{min-width:0;grid-template-columns:1fr 1fr;gap:.7rem 1rem}
   .head{display:none}
   .cols .name{grid-column:1/-1}
-  summary.cols>div[data-label]::before{content:attr(data-label);display:block;font:800 .75rem var(--sans);color:var(--muted)}
+  summary.cols>div[data-label]::before{content:attr(data-label);display:block;font:700 .75rem var(--sans);color:var(--muted)}
   .detail{padding-left:1rem}
 }
-.tip{position:relative;flex:none;width:.85rem;height:.85rem;padding:0;border-radius:50%;border:1.5px solid var(--muted);background:transparent;color:var(--muted);font:800 .55rem/1 var(--sans);cursor:help;vertical-align:middle}
+.tip{position:relative;flex:none;width:.85rem;height:.85rem;padding:0;border-radius:50%;border:1.5px solid var(--muted);background:transparent;color:var(--muted);font:700 .55rem/1 var(--sans);cursor:help;vertical-align:middle}
 .tip::after{content:"";position:absolute;inset:-11px}
 .head>span{display:flex;align-items:center;gap:.35rem;white-space:nowrap}
 .tip:hover,.tip:focus-visible{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
@@ -106,7 +106,7 @@ details.stale summary{opacity:.6}
 .maplink{color:inherit;text-decoration:none}
 .maplink:hover{color:var(--blue);text-decoration:underline}
 .maplink span{color:var(--muted);font-size:.8em}
-.addbtn{display:inline-block;margin:0 0 1rem;padding:.5rem 1rem;border:2px solid var(--blue);border-radius:10px;color:var(--blue);font:800 .9rem var(--sans);text-decoration:none}
+.addbtn{display:inline-block;margin:0 0 1rem;padding:.5rem 1rem;border:2px solid var(--blue);border-radius:10px;color:var(--blue);font:700 .9rem var(--sans);text-decoration:none}
 .addbtn:hover{background:var(--blue);color:var(--on-blue)}
 .for{display:block;color:var(--blue)}
 /* tidy report table (desktop) */
@@ -145,33 +145,33 @@ td:last-child{min-width:220px}
   table tr:first-child{display:none}
   table tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem .8rem;padding:.8rem 0;border-top:1px solid var(--line)}
   td{display:block;padding:0;border:0;white-space:normal!important;min-width:0!important}
-  td::before{content:attr(data-label);display:block;font:800 .76rem var(--sans);color:var(--muted)}
+  td::before{content:attr(data-label);display:block;font:700 .76rem var(--sans);color:var(--muted)}
   td:last-child{grid-column:1/-1}
 }
-.thin{color:var(--orange);font-weight:800}
+.thin{color:var(--orange);font-weight:700}
 .stale-src{color:var(--muted)}
 .howto{margin-top:1.5rem;background:var(--howto);border:2px solid var(--line);border-radius:16px}
-.howto summary{font-weight:800;padding:.9rem 1.2rem}
+.howto summary{font-weight:700;padding:.9rem 1.2rem}
 .howto ul{margin:0;padding:0 1.2rem 1rem 2.4rem;color:var(--muted)}
 .howto li{margin:.3rem 0}
 .howto+.panel{margin-top:1rem}
 .missing{margin:0 1.5rem 1.3rem;border:2px solid var(--line);border-radius:16px}
-.missing summary{font-weight:800;padding:.9rem 1.1rem}
+.missing summary{font-weight:700;padding:.9rem 1.1rem}
 .missing .note{margin:0 1.1rem .6rem;color:var(--muted);font-size:.9rem}
 .chips{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 1.1rem 1.1rem}
 .chips a{border:1.5px solid var(--line);border-radius:999px;padding:.2rem .7rem;color:var(--ink);font:700 .85rem var(--sans);text-decoration:none}
 .chips a:hover{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
 @media(max-width:720px){.missing{margin:0 .75rem 1rem}}
 .picks{padding:0 1.5rem 1.2rem}
-.picks .note{margin:0 0 .6rem;font:800 .9rem var(--sans);color:var(--muted)}
+.picks .note{margin:0 0 .6rem;font:700 .9rem var(--sans);color:var(--muted)}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
 .pick{display:grid;gap:.15rem;text-align:left;font:inherit;color:var(--ink);background:var(--soft);border:2px solid var(--line);border-radius:14px;padding:.8rem .9rem;cursor:pointer}
 .pick:hover{border-color:var(--blue)}
-.pick .pl{font:800 .75rem var(--sans);color:var(--muted)}
+.pick .pl{font:700 .75rem var(--sans);color:var(--muted)}
 .pick b{font:600 1.05rem var(--display)}
-.pick .pv{font:800 .95rem var(--sans);color:var(--green)}
+.pick .pv{font:700 .95rem var(--sans);color:var(--green)}
 .pgrid .pick:nth-child(2) .pv{color:var(--orange)}
-.star{color:var(--orange);font-weight:800}
+.star{color:var(--orange);font-weight:700}
 details.bestrow{background:var(--best);border-left:4px solid var(--green)}
 details.bestrow summary:hover{background:var(--best-hover)}
 @media(max-width:720px){.picks{padding:0 1rem 1rem}.pgrid{grid-template-columns:1fr}.pick{padding:.6rem .8rem}}
@@ -213,12 +213,13 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
 .cmpb.on{color:var(--blue)}
 .linkbtn.on{border-color:var(--blue);color:var(--blue)}
 .latest{margin-top:1rem}
-.lh{font:800 .9rem var(--sans);color:var(--muted);margin:0 0 .5rem}
+.lh{font:700 .9rem var(--sans);color:var(--muted);margin:0 0 .5rem}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem}
 .lrow{display:grid;gap:.1rem;text-align:left;font:inherit;color:var(--ink);background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:.7rem .9rem;cursor:pointer}
 .lrow:hover{border-color:var(--blue)}
-.lrow b{font:600 1rem var(--display)}
-.lrow span{color:var(--green);font-weight:800;font-size:.9rem}
+.lrow{grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto auto}
+.lrow b{font:600 1rem var(--display);align-self:start}
+.lrow span{color:var(--green);font-weight:700;font-size:.9rem}
 .lrow small{color:var(--muted)}
 #more{padding:.5rem 0 1rem}
 #cmpbar{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:20;display:flex;gap:.6rem;align-items:center;background:var(--tipbg);color:var(--tipfg);padding:.55rem .6rem .55rem 1.1rem;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-weight:700;font-size:.9rem}
@@ -240,8 +241,16 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 .cmpg .ch{font:600 1.05rem var(--display)}
 .cmpg .ch small{display:block;color:var(--muted);font:600 .8rem var(--sans)}
 .cmpg .cl,.cmpg .cv{border-top:1px solid var(--line);padding-top:.55rem}
-.cmpg .cl{color:var(--muted);font-weight:800;font-size:.85rem}
+.cmpg .cl{color:var(--muted);font-weight:700;font-size:.85rem}
 .cmpg .cv{font-weight:700}
+.val,td,.pv,.lrow span,.cmpg .cv,.stats b,.badge,input[type=number]{font-variant-numeric:tabular-nums}
+.val.plain,.stats b{font-variant-numeric:normal}
+@media(max-width:1180px){.head{font-size:.76rem}.head>span{gap:.25rem}}
+@media(max-width:960px){.head{font-size:.68rem}}
+.meta{align-items:center;flex-wrap:wrap;gap:.6rem 1rem}
+.metaR{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:.5rem .6rem;margin-left:auto}
+.meta .linkbtn{font-size:.85rem;padding:.4rem .85rem}
+.metaR #src{margin-left:.4rem}
 </style>
 </head>
 <body>
@@ -285,11 +294,9 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
       <select id="kill" aria-label="Time to kill"><option value="">Any kill time</option><option>One shot</option><option>Two shots</option><option>Three shots</option><option>Four+ shots</option></select>
       <select id="party" aria-label="Party size"><option value="">Any party size</option><option value="1">Solo</option><option value="2-3">2–3</option><option value="4-6">4–6</option></select>
       <select id="age" aria-label="Report age"><option value="">Reports: any time</option><option value="30">Reports: last 30 days</option><option value="90">Reports: last 90 days</option></select>
-      <button id="pinfilter" class="linkbtn" type="button" aria-pressed="false">★ Pinned (0)</button>
-      <button id="copy" class="linkbtn" type="button">Copy link to this view</button>
     </div>
     <div id="picks"></div>
-    <div class="meta"><span id="count">Loading reports…</span><span id="src" class="live"></span></div>
+    <div class="meta"><span id="count">Loading reports…</span><div class="metaR"><button id="pinfilter" class="linkbtn" type="button" aria-pressed="false">★ Pinned (0)</button><button id="copy" class="linkbtn" type="button">Copy link to this view</button><span id="src" class="live"></span></div></div>
     <div class="scroll">
       <div class="cols head"><span><button class="hsort" type="button" data-sort="name">Map<span class="arr"></span></button><button class="tip" type="button" data-tip="The training map. Click a row to see every individual report for it." aria-label="What does Map mean?">?</button></span><span><button class="hsort" type="button" data-sort="levels">Levels<span class="arr"></span></button><button class="tip" type="button" data-tip="Levels of the players who reported here, from lowest to highest." aria-label="What does Levels mean?">?</button></span><span><button class="hsort" type="button" data-sort="xp"><span id="hXp">Median EXP / hour</span><span class="arr"></span></button><button class="tip" type="button" data-tip="The median (middle) EXP per hour across reports, or the highest one if you switch to Best. The line under it shows the range of all reports. In Best mode, a ⚠ means the top report is far above the rest." aria-label="What does the EXP per hour column mean?">?</button></span><span><button class="hsort" type="button" data-sort="meso"><span id="hMeso">Median meso / hour</span><span class="arr"></span></button><button class="tip" type="button" data-tip="The median (middle) net meso per hour across reports (meso plus drops, minus potion cost), or the highest one if you switch to Best. The line under it shows the range." aria-label="What does the meso per hour column mean?">?</button></span><span><button class="hsort" type="button" data-sort="easy">Spot<span class="arr"></span></button><button class="tip" type="button" data-tip="How hard it is to find a party on this map, from 1 (very easy, every channel is empty) to 5 (very hard, over 30 minutes to find a party). The badge runs from green (easy) to red (hard) and shows the typical rating across reports." aria-label="What does Spot mean?">?</button></span><span>Party size<button class="tip" type="button" data-tip="Party sizes used by the players who reported, from smallest to largest." aria-label="What does Party size mean?">?</button></span><span><button class="hsort" type="button" data-sort="reports">Reports<span class="arr"></span></button><button class="tip" type="button" data-tip="How many reports have been submitted for this map." aria-label="What does Reports mean?">?</button></span></div>
       <div id="list"></div>
