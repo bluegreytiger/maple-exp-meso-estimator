@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v21 -->
+<!-- build: layout-v24 -->
 <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
@@ -33,9 +33,9 @@ html{font-size:14.5px}
 body{margin:0;color:var(--ink);font:1rem/1.55 var(--sans);min-height:100vh;
   background:linear-gradient(180deg,var(--sky1) 0,var(--sky2) 380px,var(--bg) 760px) no-repeat,var(--bg);
   padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-.wrap{max-width:1180px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.wrap{max-width:1320px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 .hero{display:grid;grid-template-columns:1fr auto;gap:2rem 3rem;align-items:start}
-h1{text-wrap:balance;font:700 clamp(2rem,4.6vw,3.4rem)/1.08 var(--display);letter-spacing:-.03em;margin:0 0 1rem;max-width:none}
+h1{text-wrap:balance;font:700 clamp(1.9rem,3.7vw,3.4rem)/1.08 var(--display);letter-spacing:-.03em;margin:0 0 1rem;max-width:none}
 .sub{text-wrap:pretty;color:var(--muted);font-size:1.05rem;max-width:34em;margin:0 0 1.4rem}
 .stats{font:700 .95rem var(--sans);color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap}
 .stats b{color:var(--blue);font-weight:700;font-size:1.1rem}
@@ -58,7 +58,7 @@ input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{o
 .meta{display:flex;justify-content:space-between;border-top:2px solid var(--line);padding:1.1rem 1.5rem .8rem;font:700 .9rem var(--sans);color:var(--muted)}
 .meta .live{color:var(--green)}
 .scroll{overflow-x:auto;padding:0 1.5rem 1rem}
-.cols{display:grid;grid-template-columns:minmax(220px,2.6fr) minmax(0,.8fr) minmax(0,1.5fr) minmax(0,1.5fr) minmax(0,.7fr) minmax(0,1fr) minmax(0,1fr);gap:1rem;align-items:start;min-width:860px}
+.cols{display:grid;grid-template-columns:minmax(220px,3.2fr) minmax(0,.8fr) minmax(0,1.7fr) minmax(0,1.7fr) minmax(0,.7fr) minmax(0,1fr) minmax(0,.9fr);gap:1rem;align-items:start;min-width:860px}
 .head{padding:.8rem 1rem;border-bottom:2px solid var(--line);font:700 .85rem var(--sans);color:var(--muted)}
 details{border-bottom:1px solid var(--line)}
 details:last-child{border-bottom:0}
@@ -82,7 +82,7 @@ th,td{text-align:left;padding:.5rem .6rem;border-top:1px solid var(--line);verti
 th{font:700 .8rem var(--sans);color:var(--muted)}
 td:nth-child(2){color:var(--green);font-weight:700} td:nth-child(3){color:var(--orange);font-weight:700}
 .msg{padding:2.5rem 1rem;color:var(--muted);font-weight:700}
-footer{margin-top:2rem;color:var(--muted);font-size:.92rem;max-width:44em}
+footer{margin-top:2rem;color:var(--muted);font-size:.82rem;line-height:1.75;max-width:64em}
 footer a{color:inherit}
 @media(max-width:900px){.hero{grid-template-columns:1fr}.side{justify-items:start;min-width:0}.bar{flex-wrap:wrap}.bar button{padding:.9rem 1.5rem}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -251,6 +251,32 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 .metaR{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:.5rem .6rem;margin-left:auto}
 .meta .linkbtn{font-size:.85rem;padding:.4rem .85rem}
 .metaR #src{margin-left:.4rem}
+@media(max-width:1060px){.hero{grid-template-columns:1fr}.side{justify-items:start;min-width:0}}
+.ftoggle{display:none}
+@media(max-width:720px){
+  .topbar{margin-bottom:.4rem}
+  .hero{gap:.7rem}
+  h1{margin-bottom:.5rem}
+  .sub{display:none}
+  .stats{gap:.9rem;font-size:.85rem}
+  .finder{padding:.7rem .9rem;gap:.5rem}
+  .finder strong{font-size:.95rem}
+  .cta{padding:.7rem 1rem;font-size:.95rem}
+  .howto{margin-top:1rem}
+  .latest{margin-top:.8rem}
+  .lgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.6rem;margin:0 -1rem;padding:0 1rem .4rem;scrollbar-width:none}
+  .lgrid::-webkit-scrollbar{display:none}
+  .lrow{flex:0 0 72%;scroll-snap-align:start}
+  .panel{margin-top:.9rem}
+  #refresh{display:none}
+  .ftoggle{display:inline-block}
+  .filters{display:none;padding-top:0}
+  .filters.open{display:grid}
+  .pgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.6rem;margin:0 -1rem;padding:0 1rem .3rem;scrollbar-width:none}
+  .pgrid::-webkit-scrollbar{display:none}
+  .pick{flex:0 0 78%;scroll-snap-align:start}
+  .picks{padding-bottom:.6rem}
+}
 </style>
 </head>
 <body>
@@ -285,9 +311,9 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   <section class="panel">
     <div class="bar">
       <div class="searchbox"><svg class="sicon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search maps, notes, or attack range…" aria-label="Search"><button id="clearq" type="button" aria-label="Clear search" hidden>✕</button></div>
-      <button id="refresh" type="button">Refresh</button>
+      <button id="refresh" type="button">Refresh</button><button id="ftoggle" class="ftoggle" type="button" aria-expanded="false" aria-controls="filters">Filters</button>
     </div>
-    <div class="filters">
+    <div class="filters" id="filters">
       <select id="stat" aria-label="Show median or best values"><option value="med">Show: median</option><option value="best">Show: best</option></select>
       <select id="sort" aria-label="Sort by"><option value="xp">Sort: EXP</option><option value="meso">Sort: meso</option><option value="easy">Sort: easiest party</option><option value="kill">Sort: fastest kill</option><option value="name">Sort: name (A–Z)</option><option value="levels">Sort: level (low to high)</option><option value="reports">Sort: most reports</option></select>
       <select id="skill" aria-label="Skill"><option value="">Any skill</option></select>
@@ -435,7 +461,7 @@ function render(){
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lvl</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
       ${m.g.map(o=>`<tr><td data-label="Level">${full(o.level)}</td><td data-label="EXP/hr">${full(o.xp)}</td><td data-label="Meso/hr">${full(o.meso)}</td><td data-label="Spot">${Number.isFinite(o.diff)?o.diff:"–"}</td><td data-label="Party size">${Number.isFinite(o.party)?o.party:"–"}</td><td data-label="Avg Lvl">${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td data-label="Attack range">${esc(o.dmgRaw)||"–"}</td><td data-label="Skill">${esc(o.skill)||"–"}</td><td data-label="Time to kill">${esc(o.ttk)||"–"}</td><td data-label="Notes">${esc(o.notes)}</td></tr>`).join("")}
       </table></div></details>`).join("");
-  $("count").textContent=rows.length+" observations · "+out.length+" maps";renderMissing();renderMore(out.length);
+  $("count").textContent=rows.length+" observations · "+out.length+" maps";renderMissing();renderMore(out.length);syncFilterBtn();
   if(latestFor!==obs){latestFor=obs;renderLatest()}
   const st=$("status");
   if(!obs.length){st.hidden=false;st.textContent="No reports yet. Be the first to submit one."}
@@ -501,7 +527,7 @@ $("clearq").addEventListener("click",()=>{$("q").value="";syncClear();render();w
 $("copy").addEventListener("click",async()=>{writeHash();const b=$("copy"),old=b.textContent;
   try{await navigator.clipboard.writeText(location.href);b.textContent="Link copied"}catch(e){prompt("Copy this link:",location.href)}
   setTimeout(()=>b.textContent=old,1500)});
-try{if(!localStorage.getItem("seenHowto")){$("howto").open=true;localStorage.setItem("seenHowto","1")}}catch(_){}
+try{if(!localStorage.getItem("seenHowto")){if(!matchMedia("(max-width:720px)").matches)$("howto").open=true;localStorage.setItem("seenHowto","1")}}catch(_){}
 /* EXP needed to go from level L to L+1 (formulas published by NiaMeowDB; matches its table) */
 const EXPN=(()=>{const a=[0];for(let L=1;L<=99;L++){let e;if(L<=5)e=(Math.floor(L*L/2)+15)*L;else if(L<=50){const q=Math.floor(L*L/3);e=(q+19)*q}
   else if(L<=89)e=Math.trunc(a[L-1]*1.0548);else e=Math.trunc(a[L-1]*2.1);a[L]=e}return a})();
@@ -549,6 +575,9 @@ $("cmpclear").addEventListener("click",()=>{cmp.clear();document.querySelectorAl
 $("cmpclose").addEventListener("click",()=>$("cmpdlg").close());
 $("cmpdlg").addEventListener("click",e=>{if(e.target===$("cmpdlg"))$("cmpdlg").close()});
 pinLabel();
+function filterCount(){let n=0;["skill","kill","party","age"].forEach(id=>{if($(id).value)n++});if($("stat").value!=="med")n++;if($("sort").value!=="xp")n++;if(pinOnly)n++;return n}
+function syncFilterBtn(){const n=filterCount();$("ftoggle").textContent=n?"Filters ("+n+")":"Filters"}
+$("ftoggle").addEventListener("click",()=>{const o=$("filters").classList.toggle("open");$("ftoggle").setAttribute("aria-expanded",String(o))});
 load();
 loadMapIds();
 </script>
