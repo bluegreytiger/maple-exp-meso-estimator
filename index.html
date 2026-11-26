@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v24 -->
+<!-- build: layout-v25 -->
 <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
@@ -278,6 +278,10 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   .lgrid,.pgrid{scroll-padding-inline:1rem}
   .picks{padding-bottom:.6rem}
 }
+#totop{position:fixed;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:19;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:700 .85rem var(--sans);padding:.6rem .95rem;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3);visibility:hidden;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s,visibility .2s}
+#totop.show{visibility:visible;opacity:1;transform:none}
+#totop:hover{border-color:var(--blue)}
+body.hascmp #totop{bottom:calc(4.8rem + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -334,6 +338,7 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   </section>
 
   <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links and the EXP table come from <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
+  <button id="totop" type="button" aria-label="Back to top">↑ Top</button>
   <div id="cmpbar" hidden role="status"><span id="cmptxt"></span><button id="cmpgo" type="button">Compare</button><button id="cmpclear" type="button">Clear</button></div>
   <dialog id="cmpdlg" aria-labelledby="cmph"><div class="dh"><h2 id="cmph">Compare maps</h2><button id="cmpclose" type="button" aria-label="Close">✕</button></div><div id="cmpbody"></div></dialog>
 </div>
@@ -542,7 +547,7 @@ function openMap(k){const find=()=>[...$("list").children].find(x=>x.dataset.k==
   if(!d){["lvl","q","skill","kill","party","age"].forEach(id=>$(id).value="");pinOnly=false;showAll=true;pinLabel();syncClear();render();writeHash();d=find()}
   if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})}}
 function pinLabel(){const b=$("pinfilter");b.textContent="★ Pinned ("+pins.size+")";b.classList.toggle("on",pinOnly);b.setAttribute("aria-pressed",String(pinOnly))}
-function cmpBar(msg){const n=cmp.size;$("cmpbar").hidden=!n;$("cmptxt").textContent=msg||n+" selected"+(n<2?" · pick at least 2":" · up to 3");$("cmpgo").disabled=n<2}
+function cmpBar(msg){const n=cmp.size;$("cmpbar").hidden=!n;document.body.classList.toggle("hascmp",n>0);$("cmptxt").textContent=msg||n+" selected"+(n<2?" · pick at least 2":" · up to 3");$("cmpgo").disabled=n<2}
 function cmpStats(k){const g=obs.filter(o=>o.map+"|"+o.region===k);if(!g.length)return null;
   const xs=fin(g.map(o=>o.xp)),ms=fin(g.map(o=>o.meso)),sc={},tn={};
   g.forEach(o=>{o.skills.forEach(x=>sc[x]=(sc[x]||0)+1);if(o.tcat)tn[o.tcat]=(tn[o.tcat]||0)+1});
@@ -579,6 +584,11 @@ pinLabel();
 function filterCount(){let n=0;["skill","kill","party","age"].forEach(id=>{if($(id).value)n++});if($("stat").value!=="med")n++;if($("sort").value!=="xp")n++;if(pinOnly)n++;return n}
 function syncFilterBtn(){const n=filterCount();$("ftoggle").textContent=n?"Filters ("+n+")":"Filters"}
 $("ftoggle").addEventListener("click",()=>{const o=$("filters").classList.toggle("open");$("ftoggle").setAttribute("aria-expanded",String(o))});
+const topBtn=$("totop");
+function syncTop(){topBtn.classList.toggle("show",scrollY>600)}
+addEventListener("scroll",syncTop,{passive:true});
+topBtn.addEventListener("click",()=>scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));
+syncTop();
 load();
 loadMapIds();
 </script>
