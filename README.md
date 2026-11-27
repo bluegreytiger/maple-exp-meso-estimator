@@ -12,6 +12,7 @@ Find your next training spot in MapleStory Classic World. This is a community-bu
 - Filters by your level (with a ± range), skill, time to kill, party size and how recent the reports are.
 - Shows top picks for your level: best EXP, best meso and easiest party to find.
 - Flags maps with limited data, and lists maps nobody has reported yet.
+- Shows the monsters in each map (with icons, levels and spawn counts) and lets you search by monster name.
 - Estimates how long a map takes per level once you enter your level, using the game's EXP table.
 - Click column headings to sort, pin favorite maps, compare up to three maps side by side, and see the latest reports.
 - Expands each map to show every individual report, including attack range, skill, time to kill and notes.
@@ -65,7 +66,7 @@ The page matches spreadsheet columns by the words in their headers (for example 
 
 ## Credits
 
-- Map list and IDs: [OSMS Data Explorer](https://osmsdataexplorer.com) by @ohmi.
+- Map list, map IDs and monster spawn data: [OSMS Data Explorer](https://osmsdataexplorer.com) by @ohmi, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Game content (names, text, stats, images) is © Nexon and is not covered by that license.
 - Map pages and the EXP table: [NiaMeowDB](https://meowdb.com/msclassic/maps).
 - The layout was inspired by an existing community training guide for the game.
 - All numbers come from player submissions.

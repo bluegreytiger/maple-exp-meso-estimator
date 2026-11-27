@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- build: layout-v25 -->
+<!-- build: layout-v26 -->
 <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
@@ -282,6 +282,15 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 #totop.show{visibility:visible;opacity:1;transform:none}
 #totop:hover{border-color:var(--blue)}
 body.hascmp #totop{bottom:calc(4.8rem + env(safe-area-inset-bottom,0px))}
+.name small.mobs{color:var(--ink);opacity:.85}
+.mobh{font:700 .85rem var(--sans);color:var(--muted);margin:.2rem 0 .5rem}
+.mobl{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .9rem}
+.mob{display:inline-flex;align-items:center;gap:.45rem;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.2rem .75rem .2rem .3rem;font-size:.85rem}
+.mob img{width:26px;height:26px;object-fit:contain}
+.mob b{font-weight:600}
+.mob small{color:var(--muted)}
+.mob .boss{color:var(--orange);font-weight:700;font-size:.75rem}
+.msg a{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -315,7 +324,7 @@ body.hascmp #totop{bottom:calc(4.8rem + env(safe-area-inset-bottom,0px))}
   <section id="latest" class="latest"></section>
   <section class="panel">
     <div class="bar">
-      <div class="searchbox"><svg class="sicon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search maps, notes, or attack range…" aria-label="Search"><button id="clearq" type="button" aria-label="Clear search" hidden>✕</button></div>
+      <div class="searchbox"><svg class="sicon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search maps, monsters, or notes…" aria-label="Search"><button id="clearq" type="button" aria-label="Clear search" hidden>✕</button></div>
       <button id="refresh" type="button">Refresh</button><button id="ftoggle" class="ftoggle" type="button" aria-expanded="false" aria-controls="filters">Filters</button>
     </div>
     <div class="filters" id="filters">
@@ -337,7 +346,7 @@ body.hascmp #totop{bottom:calc(4.8rem + env(safe-area-inset-bottom,0px))}
     <div id="missing"></div>
   </section>
 
-  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map list from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi. Map links and the EXP table come from <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
+  <footer>These numbers come from other players, so treat them as a rough guide, not a promise. Your gear, route, party and uptime will change what you actually get.<br>Map and monster data from <a href="https://osmsdataexplorer.com" target="_blank" rel="noopener">OSMS Data Explorer</a> by @ohmi (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>). Map links and the EXP table come from <a href="https://meowdb.com/msclassic/maps" target="_blank" rel="noopener">NiaMeowDB</a>.<br>Unofficial fan project, not affiliated with or endorsed by Nexon. MapleStory is a trademark of Nexon.</footer>
   <button id="totop" type="button" aria-label="Back to top">↑ Top</button>
   <div id="cmpbar" hidden role="status"><span id="cmptxt"></span><button id="cmpgo" type="button">Compare</button><button id="cmpclear" type="button">Clear</button></div>
   <dialog id="cmpdlg" aria-labelledby="cmph"><div class="dh"><h2 id="cmph">Compare maps</h2><button id="cmpclose" type="button" aria-label="Close">✕</button></div><div id="cmpbody"></div></dialog>
@@ -376,7 +385,7 @@ const full=n=>Number.isFinite(n)?Math.round(n).toLocaleString("en-US"):"–";
 const span=(a,f=x=>x)=>{a=fin(a);if(!a.length)return"–";const lo=Math.min(...a),hi=Math.max(...a);return lo===hi?f(lo):f(lo)+"-"+f(hi)};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let obs=[],flipFor=null,latestFor=null,showAll=false,pinOnly=false,pins=new Set(),cmp=new Set();
+let MOBS={},obs=[],flipFor=null,latestFor=null,showAll=false,pinOnly=false,pins=new Set(),cmp=new Set();
 try{pins=new Set(JSON.parse(localStorage.getItem("pins")||"[]"))}catch(_){}
 let DATA=[];
 const col=(h,re)=>{const c=h.map((x,i)=>re.test(x.toLowerCase())?i:-1).filter(i=>i>=0);
@@ -418,7 +427,7 @@ function render(){
     sk=$("skill").value,kl=$("kill").value,pt=$("party").value,ag=parseFloat($("age").value),sort=$("sort").value,typ=$("stat").value==="med",
     pr=pt?pt.split("-").map(Number):null,plo=pr?pr[0]:0,phi=pr?(pr[1]??pr[0]):99;
   const rows=obs.filter(o=>(!Number.isFinite(lv)||Math.abs(o.level-lv)<=tol)&&
-    (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes+" "+o.dmgRaw).toLowerCase().includes(q))&&
+    (!q||(o.map+" "+o.region+" "+o.skill+" "+o.notes+" "+o.dmgRaw+" "+mobTxt(o)).toLowerCase().includes(q))&&
     (!sk||o.skills.includes(sk))&&(!kl||o.tcat===kl)&&(!pinOnly||pins.has(o.map+"|"+o.region))&&(!pt||(o.party>=plo&&o.party<=phi))&&(!ag||!Number.isFinite(o.ts)||Date.now()-o.ts<=ag*864e5));
   const lvls=fin(obs.map(o=>o.level));
   $("sObs").textContent=obs.length;$("sMaps").textContent=new Set(obs.map(o=>o.map+o.region)).size;
@@ -457,12 +466,12 @@ function render(){
   $("picks").innerHTML=picks?`<div class="picks"><p class="note">Top picks for level ${lv} (±${tol})${picks.thin?" · few reports so far, so take these lightly":""}</p><div class="pgrid">${card(lab+" EXP",picks.e,full(val(picks.e.xs))+" EXP/hr"+hrs(val(picks.e.xs)))}${card(lab+" meso",picks.me,picks.me?full(val(picks.me.ms))+" meso/hr":"")}${card("Easiest party",picks.ez,picks.ez?"Spot "+Math.round(picks.ez.diff):"")}</div></div>`:"";
   const shown=showAll?out:out.slice(0,25);
   $("list").innerHTML=shown.map(m=>`<details class="${Number.isFinite(m.latest)&&Date.now()-m.latest>90*864e5?"stale":""}${picks&&m===picks.e?" bestrow":""}" data-k="${esc(m.map+"|"+m.region)}"><summary class="cols">
-      <div class="name"><i></i><b>${mapLink(m)}${pinBtn(m)}</b><small>${esc(m.region)}</small><small>${picks&&m===picks.e?'<span class="star">★ Best match</span> · ':""}${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}${m.n<3?' · <span class="thin">limited data</span>':""}</small></div>
+      <div class="name"><i></i><b>${mapLink(m)}${pinBtn(m)}</b><small>${esc(m.region)}</small>${mobsLine(m)}<small>${picks&&m===picks.e?'<span class="star">★ Best match</span> · ':""}${m.n} report${m.n>1?"s":""}${Number.isFinite(m.latest)?" · latest "+agoStr(m.latest):""}${m.n<3?' · <span class="thin">limited data</span>':""}</small></div>
       <div class="val plain" data-label="Levels">${span(m.g.map(o=>o.level))}</div>
       <div data-label="${lab} EXP / hour">${cell(best(m.xs),"xp")}</div><div data-label="${lab} meso / hour">${cell(best(m.ms),"meso")}</div>
       <div data-label="Spot">${Number.isFinite(m.diff)?`<span class="badge s${Math.min(5,Math.max(1,Math.round(m.diff)))}">${Math.round(m.diff)}</span>`:`<span class="badge none">–</span>`}</div>
       <div class="val plain" data-label="Party size">${span(m.g.map(o=>o.party))}</div><div class="val plain" data-label="Reports">${m.n}</div></summary>
-      <div class="detail"><p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Time to kill: "+m.ttk,hasNeed&&val(m.xs)>0&&"At level "+Math.round(lv)+": about "+pct(m)+" of a level per hour"].filter(Boolean).join(" · ")||"&nbsp;"}</p>
+      <div class="detail">${mobBlock(m)}<p class="facts">${[m.dmg&&"Attack range "+m.dmg,m.skill,m.ttk&&"Time to kill: "+m.ttk,hasNeed&&val(m.xs)>0&&"At level "+Math.round(lv)+": about "+pct(m)+" of a level per hour"].filter(Boolean).join(" · ")||"&nbsp;"}</p>
       <a class="addbtn" href="${reportUrl(m)}" target="_blank" rel="noopener">Add a report for this map ↗</a>
       <table><tr><th>Level</th><th>EXP/hr</th><th>Meso/hr</th><th>Spot</th><th>Party size</th><th>Avg Lvl</th><th>Attack range</th><th>Skill</th><th>Time to kill</th><th>Notes</th></tr>
       ${m.g.map(o=>`<tr><td data-label="Level">${full(o.level)}</td><td data-label="EXP/hr">${full(o.xp)}</td><td data-label="Meso/hr">${full(o.meso)}</td><td data-label="Spot">${Number.isFinite(o.diff)?o.diff:"–"}</td><td data-label="Party size">${Number.isFinite(o.party)?o.party:"–"}</td><td data-label="Avg Lvl">${Number.isFinite(o.partyLvl)?o.partyLvl:"–"}</td><td data-label="Attack range">${esc(o.dmgRaw)||"–"}</td><td data-label="Skill">${esc(o.skill)||"–"}</td><td data-label="Time to kill">${esc(o.ttk)||"–"}</td><td data-label="Notes">${esc(o.notes)}</td></tr>`).join("")}
@@ -471,7 +480,7 @@ function render(){
   if(latestFor!==obs){latestFor=obs;renderLatest()}
   const st=$("status");
   if(!obs.length){st.hidden=false;st.textContent="No reports yet. Be the first to submit one."}
-  else if(!out.length){st.hidden=false;st.textContent="No reports match. Widen the level tolerance or clear the filters."}
+  else if(!out.length){st.hidden=false;st.innerHTML=noMatchMsg(q)}
   else st.hidden=true}
 const F={l:"lvl",t:"tol",q:"q",s:"sort",v:"stat",k:"skill",x:"kill",p:"party",a:"age"};
 const HASH=Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
@@ -500,6 +509,35 @@ document.addEventListener("click",hideTip);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")hideTip()});
 addEventListener("scroll",hideTip,true);
 const IDS={full:new Map(),name:new Map()},ALL=[];
+const MOB_ICONS=true; // set to false to hide monster pictures
+const API="https://osmsdataexplorer.com/data/api/v1/";
+const getJSON=async u=>{const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()};
+const mobsFor=o=>{const id=IDS.full.get(o.map+"|"+o.region)??IDS.name.get(o.map);return(id!=null&&MOBS[id])||[]};
+let MOBTXT=new Map();
+const mobTxt=o=>{const k=o.map+"|"+o.region;let t=MOBTXT.get(k);if(t===undefined){t=mobsFor(o).map(x=>x[0]).join(" ").toLowerCase();MOBTXT.set(k,t)}return t};
+const mobsLine=m=>{const a=mobsFor(m);return a.length?`<small class="mobs">${a.slice(0,3).map(x=>esc(x[0])).join(", ")}${a.length>3?" +"+(a.length-3):""}</small>`:""};
+const mobBlock=m=>{const a=mobsFor(m);if(!a.length)return"";
+  return`<p class="mobh">Monsters in this map</p><div class="mobl">${a.slice(0,12).map(x=>`<span class="mob">${MOB_ICONS&&x[4]?`<img src="${esc(x[4])}" alt="" loading="lazy" width="26" height="26" onerror="this.style.display='none'">`:""}<b>${esc(x[0])}</b><small>Lv ${x[1]} · ×${x[2]}</small>${x[3]?'<span class="boss">Boss</span>':""}</span>`).join("")}</div>`};
+function applyMobs(idx){MOBS=idx;MOBTXT=new Map();if(obs.length)render()}
+async function loadMobs(){
+  const sd=!!(navigator.connection&&navigator.connection.saveData);
+  let c=null;try{c=JSON.parse(localStorage.getItem("mobidx"))}catch(_){}
+  if(c&&c.idx)applyMobs(c.idx);
+  if(sd)return; // data saver on: use the saved copy only
+  try{
+    let ver=null;try{const m=await getJSON(API+"meta.json");ver=m.data_updated_at||m.client_build||null}catch(_){}
+    if(c&&c.idx&&(ver?c.ver===ver:Date.now()-c.t<7*864e5))return;
+    const list=await getJSON(API+"monsters.json"),tmp={};
+    list.forEach(m=>(m.spawns||[]).forEach(s=>{const mp=tmp[s.map_id]=tmp[s.map_id]||{},e=mp[m.name];
+      if(e)e[2]+=s.count||1;else mp[m.name]=[m.name,m.level,s.count||1,m.is_boss?1:0,m.icon_url||""]}));
+    const idx={};for(const k in tmp)idx[k]=Object.values(tmp[k]).sort((a,b)=>b[2]-a[2]);
+    applyMobs(idx);
+    try{localStorage.setItem("mobidx",JSON.stringify({ver,t:Date.now(),idx}))}catch(_){}
+  }catch(e){}}
+function noMatchMsg(q){let h="No reports match. Widen the level tolerance or clear the filters.";
+  if(q&&ALL.length){const hit=ALL.filter(m=>(MOBS[m.id]||[]).some(x=>x[0].toLowerCase().includes(q))).slice(0,8);
+    if(hit.length)h+=` Maps with “${esc(q)}” but no reports yet: ${hit.map(m=>`<a href="${reportUrl(m)}" target="_blank" rel="noopener">${esc(m.map)}</a>`).join(", ")}. Be the first to add one.`}
+  return h}
 const trainable=(m,rg)=>m.is_town!==true&&rg!=="Dev"&&rg!=="Event"&&!/<Exit>/i.test(m.name)&&(m.mob_rate>0||m.mob_capacity>0||(m.mob_positions||[]).length>0);
 function renderMissing(){const el=$("missing");if(!ALL.length){el.innerHTML="";return}
   const have=new Set(obs.map(o=>o.map+"|"+o.region)),seen=new Set();
@@ -509,13 +547,13 @@ async function loadMapIds(){try{
   const r=await fetch("https://osmsdataexplorer.com/data/current/maps.json");if(!r.ok)return;
   const d=await r.json(),seen=new Map();
   (d.regions||[]).forEach(g=>(g.maps||[]).forEach(m=>{
-    const rg=m.region||g.region||"";IDS.full.set(m.name+"|"+rg,m.id);if(trainable(m,rg))ALL.push({map:m.name,region:rg});
+    const rg=m.region||g.region||"";IDS.full.set(m.name+"|"+rg,m.id);if(trainable(m,rg))ALL.push({map:m.name,region:rg,id:m.id});
     (seen.get(m.name)||seen.set(m.name,new Set()).get(m.name)).add(m.id)}));
   seen.forEach((ids,n)=>{if(ids.size===1)IDS.name.set(n,[...ids][0])});
   if(obs.length)render();else renderMissing()}catch(e){}}
 function mapLink(m){const id=IDS.full.get(m.map+"|"+m.region)??IDS.name.get(m.map);
   return id==null?esc(m.map):`<a class="maplink" href="https://meowdb.com/msclassic/maps/${String(id).padStart(9,"0")}" target="_blank" rel="noopener" title="Open this map on NiaMeowDB">${esc(m.map)}<span aria-hidden="true">&nbsp;↗</span></a>`}
-if(matchMedia("(max-width:720px)").matches)$("q").placeholder="Search maps or notes…";
+if(matchMedia("(max-width:720px)").matches)$("q").placeholder="Search maps or monsters…";
 $("picks").addEventListener("click",e=>{const b=e.target.closest(".pick");if(!b)return;
   const d=[...$("list").children].find(x=>x.dataset.k===b.dataset.k);if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})}});
 function applyTheme(t){document.documentElement.dataset.theme=t;const b=$("theme");
@@ -553,14 +591,14 @@ function cmpStats(k){const g=obs.filter(o=>o.map+"|"+o.region===k);if(!g.length)
   g.forEach(o=>{o.skills.forEach(x=>sc[x]=(sc[x]||0)+1);if(o.tcat)tn[o.tcat]=(tn[o.tcat]||0)+1});
   const tt=Object.entries(tn).sort((a,b)=>b[1]-a[1])[0];
   return{name:g[0].map,region:g[0].region,n:g.length,lv:span(g.map(o=>o.level)),xpMed:median(xs),xpBest:xs.length?Math.max(...xs):NaN,msMed:median(ms),
-    diff:median(g.map(o=>o.diff)),party:span(g.map(o=>o.party)),skills:Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(", ")||"–",kill:tt?tt[0]:"–"}}
+    diff:median(g.map(o=>o.diff)),party:span(g.map(o=>o.party)),mobs:mobsFor({map:g[0].map,region:g[0].region}).slice(0,4).map(x=>x[0]).join(", ")||"–",skills:Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(", ")||"–",kill:tt?tt[0]:"–"}}
 function openCmp(){const rs=[...cmp].map(cmpStats).filter(Boolean);if(rs.length<2)return;
   const lvN=parseFloat($("lvl").value),nd=Number.isFinite(lvN)?expNext(Math.round(lvN)):NaN;
   const row=(l,f)=>`<div class="cl">${l}</div>${rs.map(r=>`<div class="cv">${f(r)}</div>`).join("")}`;
   $("cmpbody").innerHTML=`<div class="cmpg" style="--n:${rs.length}"><div></div>${rs.map(r=>`<div class="ch">${esc(r.name)}<small>${esc(r.region)}</small></div>`).join("")}
     ${row("Levels",r=>r.lv)}${row("Median EXP / hr",r=>full(r.xpMed))}${row("Best EXP / hr",r=>full(r.xpBest))}${row("Median meso / hr",r=>full(r.msMed))}
     ${Number.isFinite(nd)?row("Per level at "+Math.round(lvN),r=>r.xpMed>0?"≈ "+fmtH(nd/r.xpMed):"–"):""}
-    ${row("Spot (1-5)",r=>Number.isFinite(r.diff)?Math.round(r.diff):"–")}${row("Party size",r=>r.party)}${row("Top skills",r=>esc(r.skills))}${row("Time to kill",r=>esc(r.kill))}${row("Reports",r=>r.n)}</div>`;
+    ${row("Spot (1-5)",r=>Number.isFinite(r.diff)?Math.round(r.diff):"–")}${row("Party size",r=>r.party)}${row("Monsters",r=>esc(r.mobs))}${row("Top skills",r=>esc(r.skills))}${row("Time to kill",r=>esc(r.kill))}${row("Reports",r=>r.n)}</div>`;
   $("cmpdlg").showModal()}
 
 document.querySelectorAll(".hsort").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.sort;
@@ -591,6 +629,7 @@ topBtn.addEventListener("click",()=>scrollTo({top:0,behavior:matchMedia("(prefer
 syncTop();
 load();
 loadMapIds();
+setTimeout(loadMobs,600);
 </script>
 </body>
 </html>
